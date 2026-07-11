@@ -491,7 +491,7 @@ export default function HomePage() {
               />
               <div>
                 <p className="font-display text-xl leading-none tracking-tight sm:text-2xl">Police Hospital</p>
-                <p className="mt-1 text-[10px] uppercase tracking-[0.22em] text-white/60 sm:text-[11px] sm:tracking-[0.28em]">
+                <p className="mt-1 text-[9px] uppercase tracking-[0.2em] text-white/60 sm:text-[11px] sm:tracking-[0.28em]">
                   Police College, Ikeja
                 </p>
               </div>
@@ -506,7 +506,8 @@ export default function HomePage() {
             <div className="hidden lg:block">
               <a
                 href="#consult"
-                className="rounded-full bg-white px-5 py-3 text-sm font-semibold text-[#2d5e55] shadow-sm transition hover:-translate-y-0.5"
+                className="rounded-full bg-white px-5 py-3 text-sm font-semibold shadow-sm transition hover:-translate-y-0.5"
+                style={{ color: "#1f2732" }}
               >
                 Book Now
               </a>
@@ -514,7 +515,8 @@ export default function HomePage() {
 
             <button
               type="button"
-              className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-[#2d5e55] shadow-sm transition hover:-translate-y-0.5 lg:hidden"
+              className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold shadow-sm transition hover:-translate-y-0.5 lg:hidden"
+              style={{ color: "#1f2732" }}
               aria-expanded={mobileMenuOpen}
               aria-controls="mobile-menu"
               onClick={() => setMobileMenuOpen((value) => !value)}
@@ -539,7 +541,8 @@ export default function HomePage() {
                   ))}
                   <a
                     href="#consult"
-                    className="mt-2 rounded-full bg-white px-4 py-3 text-center text-sm font-semibold text-[#2d5e55]"
+                    className="mt-2 rounded-full bg-white px-4 py-3 text-center text-sm font-semibold"
+                    style={{ color: "#1f2732" }}
                   >
                     Book Now
                   </a>
