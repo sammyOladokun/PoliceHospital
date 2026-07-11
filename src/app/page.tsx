@@ -23,6 +23,7 @@ import {
   MapPin,
   Phone,
   Scan,
+  List,
   Hospital,
   Record,
   Brain,
@@ -348,6 +349,7 @@ function NavLink({ children }: { children: string }) {
 
 export default function HomePage() {
   const [popover, setPopover] = useState<PopoverState | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const tileRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const popoverRef = useRef<HTMLDivElement | null>(null);
   const closeTimer = useRef<number | null>(null);
@@ -479,17 +481,17 @@ export default function HomePage() {
     <main className="overflow-hidden bg-[var(--background)]">
       <section className="bg-[#2d5e55] text-white">
         <div className="section-shell">
-          <header className="flex items-center justify-between py-6">
-            <div className="flex items-center gap-3">
+          <header className="relative flex items-center justify-between py-5 sm:py-6">
+            <div className="flex items-center gap-2 sm:gap-3">
               <Image
                 src={brandLogo}
                 alt="Police Hospital brand"
-                className="h-16 w-16 object-contain"
+                className="h-11 w-11 object-contain sm:h-16 sm:w-16"
                 priority
               />
               <div>
-                <p className="font-display text-2xl leading-none tracking-tight">Police Hospital</p>
-                <p className="text-[11px] uppercase tracking-[0.28em] text-white/60">
+                <p className="font-display text-xl leading-none tracking-tight sm:text-2xl">Police Hospital</p>
+                <p className="mt-1 text-[10px] uppercase tracking-[0.22em] text-white/60 sm:text-[11px] sm:tracking-[0.28em]">
                   Police College, Ikeja
                 </p>
               </div>
@@ -501,30 +503,69 @@ export default function HomePage() {
               ))}
             </nav>
 
-            <a
-              href="#consult"
-              className="rounded-full bg-white px-5 py-3 text-sm font-semibold text-[#2d5e55] shadow-sm transition hover:-translate-y-0.5"
+            <div className="hidden lg:block">
+              <a
+                href="#consult"
+                className="rounded-full bg-white px-5 py-3 text-sm font-semibold text-[#2d5e55] shadow-sm transition hover:-translate-y-0.5"
+              >
+                Book Now
+              </a>
+            </div>
+
+            <button
+              type="button"
+              className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-[#2d5e55] shadow-sm transition hover:-translate-y-0.5 lg:hidden"
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-menu"
+              onClick={() => setMobileMenuOpen((value) => !value)}
             >
-              Book Now
-            </a>
+              <List size={18} />
+              Menu
+            </button>
+
+            {mobileMenuOpen ? (
+              <div
+                id="mobile-menu"
+                className="absolute right-0 top-full z-20 mt-3 w-[min(280px,88vw)] rounded-[24px] border border-white/15 bg-[#1f2732] p-4 shadow-[0_30px_80px_rgba(0,0,0,0.25)] lg:hidden"
+              >
+                <div className="flex flex-col gap-2">
+                  {navLinks.map((link) => (
+                    <span
+                      key={link}
+                      className="rounded-2xl px-4 py-3 text-sm font-medium text-white/85 transition hover:bg-white/10 hover:text-white"
+                    >
+                      {link}
+                    </span>
+                  ))}
+                  <a
+                    href="#consult"
+                    className="mt-2 rounded-full bg-white px-4 py-3 text-center text-sm font-semibold text-[#2d5e55]"
+                  >
+                    Book Now
+                  </a>
+                </div>
+              </div>
+            ) : null}
           </header>
 
           <div className="mx-auto max-w-4xl pb-12 pt-4 text-center">
-            <p className="text-sm uppercase tracking-[0.3em] text-white/60">Trusted Partner in Specialist Healthcare</p>
-            <h1 className="font-display mx-auto mt-5 max-w-3xl text-5xl leading-[1.05] sm:text-6xl">
+            <p className="text-sm uppercase tracking-[0.3em] text-white/60 max-sm:hidden">
+              Trusted Partner in Specialist Healthcare
+            </p>
+            <h1 className="font-display mx-auto mt-5 max-w-3xl text-3xl leading-[1.1] sm:text-5xl sm:leading-[1.05] lg:text-6xl">
               A Leading Specialist Healthcare Institution 
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/70 sm:text-base">
               Committed to delivering exceptional, patient-centered medical services through clinical excellence, innovation, and compassion
             </p>
 
-            <div className="mx-auto mt-8 flex max-w-2xl flex-col items-stretch gap-3 md:flex-row">
-              <div className="flex w-full items-center gap-3 rounded-full bg-white/10 px-5 py-3 text-left text-sm text-white/70 shadow-[0_20px_60px_rgba(0,0,0,0.12)]">
+            <div className="mx-auto mt-8 flex max-w-2xl flex-row items-stretch gap-3">
+              <div className="flex min-w-0 flex-1 items-center gap-3 rounded-full bg-white/10 px-4 py-3 text-left text-sm text-white/70 shadow-[0_20px_60px_rgba(0,0,0,0.12)] sm:px-5">
                 <MagnifyingGlass size={18} />
-                <span>Search disease, hospital, countries</span>
+                <span className="truncate">Search disease, department</span>
               </div>
-              <button className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-[#2d5e55] shadow-[0_20px_60px_rgba(0,0,0,0.12)] transition hover:-translate-y-0.5">
-                Explore Care
+              <button className="shrink-0 rounded-full bg-white px-4 py-3 text-sm font-semibold text-[#2d5e55] shadow-[0_20px_60px_rgba(0,0,0,0.12)] transition hover:-translate-y-0.5 sm:px-6">
+                Search
               </button>
             </div>
           </div>
@@ -624,7 +665,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="mt-12 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-12 grid grid-cols-2 gap-3 lg:grid-cols-3">
             {serviceTiles.map((service, index) => (
               <ServiceTile
                 key={service.title}
@@ -683,7 +724,7 @@ export default function HomePage() {
                 {"body" in panel ? (
                   <p className="mt-4 text-sm leading-7 text-white/75">{panel.body}</p>
                 ) : (
-                  <ul className="mt-5 grid gap-x-8 gap-y-3 text-sm text-white/80 sm:grid-cols-2 lg:grid-cols-3">
+                  <ul className="mt-5 grid grid-cols-2 gap-x-8 gap-y-3 text-sm text-white/80 lg:grid-cols-3">
                     {panel.items.map((item) => (
                       <li key={item} className="flex gap-3">
                         <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#8fd3bf]" />
