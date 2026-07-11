@@ -1,4 +1,4 @@
-# Police Hospital Platform
+# Police Hospital
 
 This repo is being set up as a secure hospital platform for Police Hospital with separate access for patients and staff.
 

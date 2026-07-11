@@ -819,12 +819,10 @@ export default function HomePage() {
           <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-sm">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10">
-                  <FirstAid size={22} weight="fill" />
-                </div>
+                <Image src={brandLogo} alt="Police Hospital brand" className="h-12 w-12 object-contain" />
                 <div>
                   <p className="font-display text-2xl leading-none">Police Hospital</p>
-                  <p className="text-[11px] uppercase tracking-[0.28em] text-white/60">Healthcare platform</p>
+                  <p className="text-[11px] uppercase tracking-[0.28em] text-white/60">Police College, Ikeja</p>
                 </div>
               </div>
               <p className="mt-5 max-w-md text-sm leading-7 text-white/72">
@@ -879,7 +877,7 @@ export default function HomePage() {
           </div>
 
           <div className="mt-10 border-t border-white/15 pt-5 text-sm text-white/55">
-            © 2026 Police Hospital Platform. All rights reserved.
+            © 2026 Police Hospital. All rights reserved.
           </div>
         </div>
       </footer>

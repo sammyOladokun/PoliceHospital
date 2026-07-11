@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Police Hospital Platform",
+  title: "Police Hospital",
   description: "Patient and staff portal for Police Hospital"
 };
 
