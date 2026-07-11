@@ -79,29 +79,41 @@ const keyFeatures = [
   }
 ];
 
-const plans = [
+const aboutPanels = [
   {
-    name: "Global Lite",
-    price: "$10/Month",
-    features: [
-      "Global Health Coverage Plan NG",
-      "USA Health Advisor",
-      "Discounted US Medication",
-      "Visa Assistance",
-      "Preventive Genetic Screening",
-      "Global Concierge Service"
-    ]
+    title: "Our Vision",
+    body: "To be a centre of excellence in specialist healthcare delivery, recognized for outstanding clinical services, innovation, professionalism, and patient satisfaction."
   },
   {
-    name: "Global Family",
-    price: "$45/Month",
-    features: [
-      "Global Health Coverage Plan NG",
-      "USA Health Advisor",
-      "Discounted US Medication",
-      "Visa Assistance",
-      "Preventive Genetic Screening",
-      "Global Concierge Service"
+    title: "Our Mission",
+    body: "To provide accessible, high-quality, and compassionate specialist healthcare through skilled professionals, advanced medical technology, continuous improvement, and a patient-first approach."
+  },
+  {
+    title: "Our Core Values",
+    items: ["Excellence", "Compassion", "Professionalism", "Integrity", "Innovation", "Teamwork", "Patient-Centred Care"]
+  },
+  {
+    title: "Our Specialist Services",
+    items: [
+      "Family Medicine",
+      "Internal Medicine",
+      "General Surgery",
+      "Obstetrics and Gynaecology",
+      "Paediatrics",
+      "Orthopaedics",
+      "ENT",
+      "Ophthalmology",
+      "Dental Services",
+      "Mental Health Services",
+      "Emergency and Trauma Care",
+      "Antenatal, Delivery and Postnatal Care",
+      "Child Welfare and Immunization",
+      "Diagnostic Laboratory Services",
+      "Medical Imaging and Radiology",
+      "Pharmacy Services",
+      "Physiotherapy and Rehabilitation",
+      "NHIA/HMO Services",
+      "Preventive Health and Wellness Clinics"
     ]
   }
 ];
@@ -551,13 +563,10 @@ export default function HomePage() {
           {keyFeatures.map((feature) => {
             const Icon = feature.icon;
             return (
-              <article key={feature.title} className="soft-card p-8 text-center">
+              <article key={feature.title} className="flex flex-col items-center text-center">
                 <Icon size={32} className="mx-auto text-[#2d5e55]" />
                 <h3 className="mt-5 font-display text-2xl text-slate-800">{feature.title}</h3>
                 <p className="mt-3 text-sm leading-7 text-slate-500">{feature.description}</p>
-                <button className="mt-6 rounded-full bg-[#2d5e55] px-5 py-2 text-sm font-semibold text-white transition hover:bg-[#244a43]">
-                  Learn More
-                </button>
               </article>
             );
           })}
@@ -593,11 +602,12 @@ export default function HomePage() {
       </section>
 
       <section className="section-shell pb-16 sm:pb-24">
-        <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-          <div>
+        <div>
+          <div className="mx-auto max-w-4xl text-center">
             <SectionTitle
               title="Our Services"
               subtitle="Comprehensive Specialist Healthcare You Can Trust"
+              centered
             />
             <div className="mt-4 space-y-4 text-sm leading-7 text-slate-500">
               <p>
@@ -614,15 +624,15 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+          <div className="mt-12 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
             {serviceTiles.map((service, index) => (
-                <ServiceTile
-                  key={service.title}
-                  service={service}
-                  active={popover?.service.title === service.title}
-                  buttonRef={(element) => {
-                    tileRefs.current[index] = element;
-                  }}
+              <ServiceTile
+                key={service.title}
+                service={service}
+                active={popover?.service.title === service.title}
+                buttonRef={(element) => {
+                  tileRefs.current[index] = element;
+                }}
                 onClick={() => {
                   const element = tileRefs.current[index];
                   if (!element) return;
@@ -659,30 +669,30 @@ export default function HomePage() {
       <section className="bg-[#1f2732] py-16 text-white sm:py-24">
         <div className="section-shell">
           <div className="mx-auto max-w-3xl text-center">
-            <h2 className="font-display text-4xl sm:text-5xl">Global Plans</h2>
+            <h2 className="font-display text-4xl sm:text-5xl">Who We Are</h2>
             <p className="mt-4 text-sm leading-7 text-white/65">
-              World’s best health care now accessible and affordable, with membership plans that feel simple to
-              understand and easy to use.
+              A specialist hospital built on clinical excellence, compassion, innovation, and a deep commitment to
+              patient-centred care.
             </p>
           </div>
 
-          <div className="mt-12 grid gap-6 lg:grid-cols-2">
-            {plans.map((plan) => (
-              <article key={plan.name} className="rounded-[28px] bg-white/5 p-7 ring-1 ring-white/10">
-                <p className="text-sm font-semibold text-white/60">{plan.name}</p>
-                <p className="mt-4 text-5xl font-semibold tracking-tight">{plan.price}</p>
-                <ul className="mt-6 space-y-3 text-sm text-white/75">
-                  {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-center gap-3">
-                      <CheckCircle size={16} weight="fill" className="text-[#8fd3bf]" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                <button className="mt-8 rounded-full bg-white px-5 py-3 text-sm font-semibold text-[#1f2732]">
-                  Get Started
-                </button>
-              </article>
+          <div className="mt-12 grid gap-10">
+            {aboutPanels.map((panel) => (
+              <div key={panel.title} className="space-y-4">
+                <h3 className="font-display text-3xl text-white">{panel.title}</h3>
+                {"body" in panel ? (
+                  <p className="mt-4 text-sm leading-7 text-white/75">{panel.body}</p>
+                ) : (
+                  <ul className="mt-5 grid gap-x-8 gap-y-3 text-sm text-white/80 sm:grid-cols-2 lg:grid-cols-3">
+                    {panel.items.map((item) => (
+                      <li key={item} className="flex gap-3">
+                        <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#8fd3bf]" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             ))}
           </div>
         </div>
