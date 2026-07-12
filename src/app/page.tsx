@@ -14,7 +14,6 @@ import brandLogo from "../../assets/brand_logo.png";
 import heroImage from "../../assets/hero_image.png";
 import {
   ChatCenteredDots,
-  CheckCircle,
   FacebookLogo,
   FirstAid,
   Heartbeat,
@@ -25,12 +24,7 @@ import {
   Scan,
   List,
   Hospital,
-  Record,
-  Brain,
-  Dna,
   Syringe,
-  Lightning,
-  ShieldCheck,
   MagnifyingGlass,
   Stethoscope,
   Ambulance,
@@ -119,43 +113,83 @@ const aboutPanels = [
   }
 ];
 
-const specialties = [
-  { label: "Oncology", icon: CheckCircle },
-  { label: "Endocrinology", icon: Record },
-  { label: "Infertility", icon: Heartbeat },
-  { label: "Mental Health", icon: Brain },
-  { label: "Cardiology", icon: Heartbeat },
-  { label: "Neurology", icon: Lightning },
-  { label: "Rheumatology", icon: ShieldCheck },
-  { label: "Plastic Surgery", icon: FirstAid },
-  { label: "Rare Diseases", icon: Dna },
-  { label: "Surgery", icon: Syringe }
+const faqItems = [
+  {
+    question: "Why should I choose Police College Hospital Ikeja?",
+    answer:
+      "We combine specialist healthcare expertise, compassionate service, modern diagnostics, and a patient-centred approach to deliver safe, timely, and high-quality care."
+  },
+  {
+    question: "What makes your specialist care different?",
+    answer:
+      "Our consultants, specialist physicians, nurses, pharmacists, laboratory scientists, and other professionals work together to provide expert diagnosis, treatment, and follow-up across multiple specialties."
+  },
+  {
+    question: "How do you keep care patient-centred?",
+    answer:
+      "We listen carefully, involve patients in care decisions, and tailor each treatment plan to the individual with dignity, respect, and compassion."
+  },
+  {
+    question: "What diagnostic services support treatment?",
+    answer:
+      "We use reliable laboratory services and medical imaging to support accurate diagnosis, effective treatment, and safer clinical decisions."
+  },
+  {
+    question: "Can I access multiple healthcare services in one place?",
+    answer:
+      "Yes. We provide preventive care, specialist consultations, emergency treatment, surgery, pharmacy services, laboratory services, and rehabilitation under one roof."
+  },
+  {
+    question: "How do you protect patient safety?",
+    answer:
+      "Patient safety is central to our care through strong clinical governance, infection prevention and control, quality assurance, and continuous service improvement."
+  },
+  {
+    question: "Do you accept NHIA and HMO patients?",
+    answer:
+      "Yes. We are accredited under NHIA and work with accredited HMOs to support insured patients with authorization and claims processes."
+  },
+  {
+    question: "Where is the hospital located?",
+    answer:
+      "We are located within Police College, GRA Ikeja, Lagos, and serve police personnel, their families, and the general public."
+  },
+  {
+    question: "What should I expect from your team?",
+    answer:
+      "You can expect professional, ethical, compassionate care from a multidisciplinary team committed to continuous improvement and medical excellence."
+  },
+  {
+    question: "What is your promise to patients?",
+    answer:
+      "Our promise is expert specialist medical care, compassionate treatment, modern diagnostic support, a safe and clean environment, and dedicated professionals focused on your well-being."
+  }
 ];
 
-const doctors = [
+const blogPosts = [
   {
-    name: "Dr. Wade Warren",
-    role: "Chief Consultant",
+    title: "Why Specialist Healthcare Matters for Better Outcomes",
+    date: "July 2026",
+    summary:
+      "Learn how specialist-led care improves diagnosis, treatment planning, and long-term patient outcomes across complex medical conditions.",
     image:
       "https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&w=900&q=80"
   },
   {
-    name: "Dr. Cameron Williamson",
-    role: "Internal Medicine",
+    title: "How Modern Diagnostics Support Faster Clinical Decisions",
+    date: "July 2026",
+    summary:
+      "See how laboratory services and medical imaging help clinicians deliver safer, more accurate, and more efficient care.",
     image:
-      "https://images.unsplash.com/photo-1504257432389-52343af06ae3?auto=format&fit=crop&w=900&q=80"
+      "https://images.unsplash.com/photo-1580281657527-47f249e8f8a8?auto=format&fit=crop&w=900&q=80"
   },
   {
-    name: "Dr. Guy Hawkins",
-    role: "Family Physician",
+    title: "What Patient-Centred Care Looks Like in Practice",
+    date: "July 2026",
+    summary:
+      "A look at how compassion, communication, and shared decision-making shape the patient experience at Police College Hospital Ikeja.",
     image:
-      "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=900&q=80"
-  },
-  {
-    name: "Dr. Leslie Alexander",
-    role: "Surgery Lead",
-    image:
-      "https://images.unsplash.com/photo-1527613426441-4da17471b66d?auto=format&fit=crop&w=900&q=80"
+      "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=900&q=80"
   }
 ];
 
@@ -271,28 +305,51 @@ function SectionTitle({
   );
 }
 
-function CardImage({
+function BlogCard({
   image,
-  name,
-  role
+  title,
+  date,
+  summary
 }: {
   image: string;
-  name: string;
-  role: string;
+  title: string;
+  date: string;
+  summary: string;
 }) {
   return (
-    <div className="overflow-hidden rounded-[26px] bg-slate-200">
+    <article className="overflow-hidden rounded-[26px] bg-white shadow-[0_18px_50px_rgba(19,27,34,0.08)]">
       <div
-        className="h-[250px] bg-cover bg-center"
+        className="h-[220px] bg-cover bg-center"
         style={{
-          backgroundImage: `linear-gradient(to top, rgba(18,24,29,0.12), rgba(18,24,29,0.02)), url(${image})`
+          backgroundImage: `linear-gradient(to top, rgba(18,24,29,0.18), rgba(18,24,29,0.02)), url(${image})`
         }}
       />
-      <div className="border-t border-white/80 bg-white px-4 py-3 text-center">
-        <p className="text-sm font-semibold text-slate-800">{name}</p>
-        <p className="text-xs text-slate-500">{role}</p>
+      <div className="space-y-3 p-5">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#2d5e55]">{date}</p>
+        <h3 className="font-display text-2xl leading-tight text-slate-800">{title}</h3>
+        <p className="text-sm leading-7 text-slate-500">{summary}</p>
       </div>
-    </div>
+    </article>
+  );
+}
+
+function FaqItem({
+  question,
+  answer
+}: {
+  question: string;
+  answer: string;
+}) {
+  return (
+    <details className="rounded-[24px] border border-slate-100 bg-white p-5 shadow-[0_18px_50px_rgba(19,27,34,0.06)] group">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left font-display text-xl text-slate-800">
+        <span>{question}</span>
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#2d5e55]/10 text-[#2d5e55] transition group-open:rotate-45">
+          +
+        </span>
+      </summary>
+      <p className="mt-4 text-sm leading-7 text-slate-500">{answer}</p>
+    </details>
   );
 }
 
@@ -650,7 +707,6 @@ export default function HomePage() {
           <div className="mx-auto max-w-4xl text-center">
             <SectionTitle
               title="Our Services"
-              subtitle="Comprehensive Specialist Healthcare You Can Trust"
               centered
             />
             <div className="mt-4 space-y-4 text-sm leading-7 text-slate-500">
@@ -743,28 +799,26 @@ export default function HomePage() {
       </section>
 
       <section className="section-shell py-16 sm:py-24">
-        <SectionTitle title="Explore Treatments across specialities" />
-        <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-          {specialties.map((specialty) => {
-            const Icon = specialty.icon;
-            return (
-              <div key={specialty.label} className="soft-card flex flex-col items-center gap-3 px-4 py-5 text-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-100 bg-slate-50 text-slate-500">
-                  <Icon size={20} />
-                </div>
-                <p className="text-sm font-semibold text-slate-700">{specialty.label}</p>
-              </div>
-            );
-          })}
+        <div className="mx-auto max-w-4xl text-center">
+          <SectionTitle
+            title="Frequently Asked Questions"
+            centered
+          />
+        </div>
+
+        <div className="mt-12 grid gap-4">
+          {faqItems.map((item) => (
+            <FaqItem key={item.question} question={item.question} answer={item.answer} />
+          ))}
         </div>
       </section>
 
       <section className="bg-white/60 py-16 sm:py-24">
         <div className="section-shell">
-          <SectionTitle title="World's Top Doctors" centered />
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-            {doctors.map((doctor) => (
-              <CardImage key={doctor.name} {...doctor} />
+          <SectionTitle title="Latest from the Blog" subtitle="Insights, updates, and patient education from our team" centered />
+          <div className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+            {blogPosts.map((post) => (
+              <BlogCard key={post.title} {...post} />
             ))}
           </div>
         </div>
