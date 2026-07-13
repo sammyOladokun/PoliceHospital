@@ -12,7 +12,6 @@ import {
 import Image from "next/image";
 import brandLogo from "../../assets/brand_logo.png";
 import heroImage from "../../assets/hero_image.png";
-import supportImage from "../../assets/support.jpeg";
 import {
   ChatCenteredDots,
   FacebookLogo,
@@ -677,27 +676,17 @@ export default function HomePage() {
 
       <section className="section-shell pb-16 sm:pb-24">
         <div className="mx-auto w-full max-w-[590px] overflow-hidden rounded-[36px] bg-[#1f2732] text-white shadow-[0_30px_80px_rgba(24,30,39,0.16)]">
-          <div className="grid gap-8 px-6 py-8 sm:px-8 sm:py-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:px-12 lg:py-0">
-            <div className="lg:py-12">
+          <div className="relative flex items-start justify-between gap-4 px-6 py-8 sm:px-8 sm:py-10 lg:px-12 lg:py-12">
+            <div className="max-w-[220px] sm:max-w-md">
               <h2 className="font-display max-w-md text-3xl leading-tight sm:text-4xl">
                 Teleconsult Our Patient Advisors
               </h2>
-              <button className="mt-6 rounded-full bg-white px-5 py-3 text-sm font-semibold text-[#1f2732]">
-                Book a Call
-              </button>
             </div>
 
-            <div className="relative min-h-[240px] overflow-hidden lg:min-h-[300px]">
-              <div className="absolute left-6 top-8 z-10 rounded-full bg-white/20 p-5 text-white sm:left-10 sm:top-10">
+            <div className="relative shrink-0">
+              <div className="absolute inset-0 rounded-full bg-white/20 animate-ping" />
+              <div className="relative rounded-full bg-white/20 p-4 text-white sm:p-5">
                 <Phone size={32} weight="fill" />
-              </div>
-              <div className="absolute inset-y-0 right-0 w-[72%] sm:w-[64%] lg:w-[68%]">
-                <Image
-                  src={supportImage}
-                  alt="Patient support"
-                  fill
-                  className="object-contain object-bottom"
-                />
               </div>
             </div>
           </div>
