@@ -12,6 +12,7 @@ import {
 import Image from "next/image";
 import brandLogo from "../../assets/brand_logo.png";
 import heroImage from "../../assets/hero_image.png";
+import supportImage from "../../assets/support.jpeg";
 import {
   ChatCenteredDots,
   FacebookLogo,
@@ -675,9 +676,9 @@ export default function HomePage() {
       </section>
 
       <section className="section-shell pb-16 sm:pb-24">
-        <div className="overflow-hidden rounded-[36px] bg-[#1f2732] text-white shadow-[0_30px_80px_rgba(24,30,39,0.16)]">
-          <div className="grid gap-8 px-8 py-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:px-12">
-            <div>
+        <div className="mx-auto w-full max-w-[590px] overflow-hidden rounded-[36px] bg-[#1f2732] text-white shadow-[0_30px_80px_rgba(24,30,39,0.16)]">
+          <div className="grid gap-8 px-6 py-8 sm:px-8 sm:py-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:px-12 lg:py-0">
+            <div className="lg:py-12">
               <h2 className="font-display max-w-md text-3xl leading-tight sm:text-4xl">
                 Teleconsult Our Patient Advisors
               </h2>
@@ -686,17 +687,18 @@ export default function HomePage() {
               </button>
             </div>
 
-            <div className="relative h-[220px]">
-              <div className="absolute left-10 top-10 rounded-full bg-white/20 p-5 text-white">
+            <div className="relative min-h-[240px] overflow-hidden lg:min-h-[300px]">
+              <div className="absolute left-6 top-8 z-10 rounded-full bg-white/20 p-5 text-white sm:left-10 sm:top-10">
                 <Phone size={32} weight="fill" />
               </div>
-              <div
-                className="absolute right-0 top-0 h-full w-[78%] rounded-[32px] bg-cover bg-center"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(to top, rgba(31,39,50,0.05), rgba(31,39,50,0.05)), url(https://images.unsplash.com/photo-1594824804732-d1a6ba93d94b?auto=format&fit=crop&w=1000&q=80)"
-                }}
-              />
+              <div className="absolute inset-y-0 right-0 w-[72%] sm:w-[64%] lg:w-[68%]">
+                <Image
+                  src={supportImage}
+                  alt="Patient support"
+                  fill
+                  className="object-contain object-bottom"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -824,45 +826,29 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="consult" className="section-shell py-16 sm:py-24">
-        <div className="overflow-hidden rounded-[30px] bg-[linear-gradient(135deg,#f0ece4_0%,#fbfaf7_55%,#ece7dc_100%)] shadow-[0_20px_60px_rgba(35,43,50,0.09)]">
-          <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-            <div className="p-8 sm:p-10">
-              <h2 className="font-display text-4xl text-[#2d5e55]">Book A Free Consultation</h2>
-              <form className="mt-8 grid gap-4 sm:grid-cols-2">
-                {["First Name", "Last Name", "Email ID", "Mobile Number"].map((field) => (
+      <section id="consult" className="section-shell py-12 sm:py-20">
+        <div className="overflow-hidden rounded-[28px] bg-[linear-gradient(135deg,#f0ece4_0%,#fbfaf7_55%,#ece7dc_100%)] shadow-[0_20px_60px_rgba(35,43,50,0.09)]">
+          <div className="px-6 py-10 sm:px-8 sm:py-12 lg:px-12 lg:py-14">
+            <div className="p-6 sm:p-8 lg:p-9">
+              <h2 className="font-display text-3xl text-[#2d5e55] sm:text-4xl">Book A Free Consultation</h2>
+              <form className="mt-6 grid gap-3 sm:grid-cols-2">
+                {["First Name", "Last Name", "Email", "Mobile Number"].map((field) => (
                   <input
                     key={field}
                     placeholder={field}
-                    className="rounded-full border-0 bg-white px-5 py-4 text-sm outline-none ring-1 ring-black/5 placeholder:text-slate-400 focus:ring-2 focus:ring-[#2d5e55]/35"
+                    className="rounded-full border-0 bg-white px-5 py-3 text-sm outline-none ring-1 ring-black/5 placeholder:text-slate-400 focus:ring-2 focus:ring-[#2d5e55]/35"
                   />
                 ))}
-                <div className="sm:col-span-2">
-                  <button className="flex w-full items-center justify-between rounded-full bg-white px-5 py-4 text-left text-sm text-slate-400 ring-1 ring-black/5">
-                    <span>Country</span>
-                    <CaretDown size={16} />
-                  </button>
-                </div>
                 <textarea
                   placeholder="Message"
-                  className="min-h-28 rounded-[22px] border-0 bg-white px-5 py-4 text-sm outline-none ring-1 ring-black/5 placeholder:text-slate-400 focus:ring-2 focus:ring-[#2d5e55]/35 sm:col-span-2"
+                  className="min-h-24 rounded-[22px] border-0 bg-white px-5 py-3 text-sm outline-none ring-1 ring-black/5 placeholder:text-slate-400 focus:ring-2 focus:ring-[#2d5e55]/35 sm:col-span-2"
                 />
                 <div className="sm:col-span-2">
-                  <button className="rounded-full bg-[#1f2732] px-7 py-3 text-sm font-semibold text-white">
+                  <button className="rounded-full bg-[#1f2732] px-6 py-3 text-sm font-semibold text-white">
                     Submit
                   </button>
                 </div>
               </form>
-            </div>
-
-            <div className="relative min-h-[420px]">
-              <div
-                className="absolute inset-y-0 right-0 w-full bg-cover bg-right-bottom"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(to left, rgba(242,239,232,0.05), rgba(242,239,232,0.05)), url(https://images.unsplash.com/photo-1594824475317-8b5c6d9f0a10?auto=format&fit=crop&w=1000&q=80)"
-                }}
-              />
             </div>
           </div>
         </div>
