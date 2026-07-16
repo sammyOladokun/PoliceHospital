@@ -10,8 +10,30 @@ import {
   type PointerEvent as ReactPointerEvent
 } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
 import brandLogo from "../../assets/brand_logo.png";
-import heroImage from "../../assets/hero_image.png";
+import buildingImg from "../../assets/building.jpeg";
+import staffGroupImg from "../../assets/hero.jpeg";
+import surgeryImg from "../../assets/s.jpeg";
+import nurseImg from "../../assets/s2.jpeg";
+import doctorImg from "../../assets/support.jpeg";
+import ambulanceImg from "../../assets/ambulance.jpeg";
+import dentalImg from "../../assets/dental.jpeg";
+import pharmacyImg from "../../assets/pharmacy.jpeg";
+import labImg from "../../assets/area.jpeg";
+import ultrasoundImg from "../../assets/office.jpeg";
+import eyeImg from "../../assets/lab.jpeg";
+import optometryImg from "../../assets/lab-2.jpeg";
+import physioImg from "../../assets/lab-3.jpeg";
+import mammographyImg from "../../assets/lab-subject.jpeg";
+import xrayImg from "../../assets/lab-subject-2.jpeg";
+import lineArt1 from "../../assets/1.png";
+import lineArt2 from "../../assets/2.png";
+import teamIllustration from "../../assets/3.png";
+
 import {
   ChatCenteredDots,
   FacebookLogo,
@@ -22,7 +44,6 @@ import {
   MapPin,
   Phone,
   Scan,
-  List,
   Hospital,
   Syringe,
   MagnifyingGlass,
@@ -34,10 +55,21 @@ import {
   Eyeglasses,
   YoutubeLogo,
   X,
-  CaretDown
+  ArrowRight,
+  Check,
+  CaretDown,
+  UserCircle,
+  IdentificationCard
 } from "@phosphor-icons/react/dist/ssr";
 
 const navLinks = ["Second Opinion", "Medical Tourism", "Client's Talk", "Membership Card", "Testimonials", "Login"];
+
+const stats = [
+  { target: 18, suffix: "+", label: "Specialist Services" },
+  { target: 24, suffix: "/7", label: "Emergency Care" },
+  { target: 50, suffix: "+", label: "Care Professionals" },
+  { target: 1000, suffix: "+", label: "Patients Served" }
+];
 
 const keyFeatures = [
   {
@@ -69,8 +101,77 @@ const keyFeatures = [
   {
     title: "Expert Multidisciplinary Care",
     description:
-      "Consultants, nurses, pharmacists, laboratory scientists, physiotherapists, radiographers, and allied health teams working with inpatient wards, private suites, infection prevention, quality assurance, research, continuous medical education, and international standards.",
+      "Consultants, nurses, pharmacists, laboratory scientists, physiotherapists, radiographers, and allied health teams working to international standards.",
     icon: UsersFour
+  }
+];
+
+const facilities = [
+  {
+    title: "Emergency & Ambulance",
+    tag: "Emergency",
+    description: "Rapid emergency response with ambulance services ready to deliver life-saving care around the clock.",
+    image: ambulanceImg
+  },
+  {
+    title: "Operating Theatres",
+    tag: "Surgery",
+    description: "Fully equipped theatres supporting safe surgical procedures across multiple specialties.",
+    image: surgeryImg
+  },
+  {
+    title: "Dental Clinic",
+    tag: "Dental",
+    description: "Comprehensive dental care, from routine check-ups to specialist treatment and oral surgery.",
+    image: dentalImg
+  },
+  {
+    title: "Pharmacy",
+    tag: "Pharmacy",
+    description: "A well-stocked pharmacy dispensing quality, affordable medication with professional guidance.",
+    image: pharmacyImg
+  },
+  {
+    title: "Medical Laboratory",
+    tag: "Diagnostics",
+    description: "Modern laboratory systems delivering fast, reliable, and accurate diagnostic testing.",
+    image: labImg
+  },
+  {
+    title: "Ultrasound & Antenatal",
+    tag: "Imaging",
+    description: "Ultrasound imaging and antenatal support for safe pregnancy and women's health.",
+    image: ultrasoundImg
+  },
+  {
+    title: "Eye Clinic",
+    tag: "Ophthalmology",
+    description: "Specialist vision care, comprehensive eye examinations, and eye disease management.",
+    image: eyeImg
+  },
+  {
+    title: "Optometry Suite",
+    tag: "Optometry",
+    description: "Advanced eye-diagnostic equipment for precise, detailed vision assessment.",
+    image: optometryImg
+  },
+  {
+    title: "Physiotherapy",
+    tag: "Rehabilitation",
+    description: "Physiotherapy and rehabilitation to restore mobility, strength, and everyday function.",
+    image: physioImg
+  },
+  {
+    title: "Mammography",
+    tag: "Screening",
+    description: "Breast imaging that supports early detection and preventive women's health screening.",
+    image: mammographyImg
+  },
+  {
+    title: "Radiology & X-ray",
+    tag: "Radiology",
+    description: "Digital X-ray and medical imaging that support safer, more accurate clinical decisions.",
+    image: xrayImg
   }
 ];
 
@@ -172,24 +273,21 @@ const blogPosts = [
     date: "July 2026",
     summary:
       "Learn how specialist-led care improves diagnosis, treatment planning, and long-term patient outcomes across complex medical conditions.",
-    image:
-      "https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&w=900&q=80"
+    image: labImg
   },
   {
     title: "How Modern Diagnostics Support Faster Clinical Decisions",
     date: "July 2026",
     summary:
       "See how laboratory services and medical imaging help clinicians deliver safer, more accurate, and more efficient care.",
-    image:
-      "https://images.unsplash.com/photo-1580281657527-47f249e8f8a8?auto=format&fit=crop&w=900&q=80"
+    image: xrayImg
   },
   {
     title: "What Patient-Centred Care Looks Like in Practice",
     date: "July 2026",
     summary:
       "A look at how compassion, communication, and shared decision-making shape the patient experience at Police College Hospital Ikeja.",
-    image:
-      "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=900&q=80"
+    image: dentalImg
   }
 ];
 
@@ -289,18 +387,38 @@ type PopoverState = {
 };
 
 function SectionTitle({
+  eyebrow,
   title,
   subtitle,
-  centered = false
+  centered = false,
+  light = false
 }: {
+  eyebrow?: string;
   title: string;
   subtitle?: string;
   centered?: boolean;
+  light?: boolean;
 }) {
   return (
-    <div className={centered ? "text-center" : ""}>
-      <h2 className="font-display text-3xl leading-tight text-[#2d5e55] sm:text-4xl">{title}</h2>
-      {subtitle ? <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-500">{subtitle}</p> : null}
+    <div className={centered ? "mx-auto flex max-w-2xl flex-col items-center text-center" : ""}>
+      {eyebrow ? (
+        <span
+          className={`inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] ${
+            light ? "bg-white/10 text-white/80" : "bg-[#0a2a6b]/10 text-[#0a2a6b]"
+          }`}
+        >
+          <span className={`h-1.5 w-1.5 rounded-full ${light ? "bg-[#f5b301]" : "bg-[#0a2a6b]"}`} />
+          {eyebrow}
+        </span>
+      ) : null}
+      <h2
+        className={`font-display mt-3 text-2xl leading-tight sm:mt-4 sm:text-4xl ${light ? "text-white" : "text-[#0a2a6b]"}`}
+      >
+        {title}
+      </h2>
+      {subtitle ? (
+        <p className={`mt-3 max-w-2xl text-[13px] leading-6 sm:text-sm sm:leading-7 ${light ? "text-white/65" : "text-slate-500"}`}>{subtitle}</p>
+      ) : null}
     </div>
   );
 }
@@ -311,45 +429,70 @@ function BlogCard({
   date,
   summary
 }: {
-  image: string;
+  image: (typeof blogPosts)[number]["image"];
   title: string;
   date: string;
   summary: string;
 }) {
   return (
-    <article className="overflow-hidden rounded-[26px] bg-white shadow-[0_18px_50px_rgba(19,27,34,0.08)]">
-      <div
-        className="h-[220px] bg-cover bg-center"
-        style={{
-          backgroundImage: `linear-gradient(to top, rgba(18,24,29,0.18), rgba(18,24,29,0.02)), url(${image})`
-        }}
-      />
-      <div className="space-y-3 p-5">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#2d5e55]">{date}</p>
-        <h3 className="font-display text-2xl leading-tight text-slate-800">{title}</h3>
-        <p className="text-sm leading-7 text-slate-500">{summary}</p>
+    <article className="photo-card group overflow-hidden rounded-[26px] bg-white shadow-[0_18px_50px_rgba(19,27,34,0.08)]">
+      <div className="relative h-[180px] overflow-hidden sm:h-[220px]">
+        <Image src={image} alt={title} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#05123a]/55 via-[#05123a]/10 to-transparent" />
+        <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#0a2a6b] sm:text-[11px]">
+          {date}
+        </span>
+      </div>
+      <div className="space-y-2.5 p-5 sm:space-y-3">
+        <h3 className="font-display text-xl leading-tight text-slate-800 sm:text-2xl">{title}</h3>
+        <p className="text-[13px] leading-6 text-slate-500 sm:text-sm sm:leading-7">{summary}</p>
+        <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#0a2a6b]">
+          Read article <ArrowRight size={15} />
+        </span>
       </div>
     </article>
   );
 }
 
-function FaqItem({
-  question,
-  answer
-}: {
-  question: string;
-  answer: string;
-}) {
+function FaqItem({ question, answer }: { question: string; answer: string }) {
   return (
-    <details className="rounded-[24px] border border-slate-100 bg-white p-5 shadow-[0_18px_50px_rgba(19,27,34,0.06)] group">
+    <details className="reveal group rounded-[24px] border border-slate-100 bg-white p-5 shadow-[0_18px_50px_rgba(19,27,34,0.06)]">
       <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left font-display text-xl text-slate-800">
         <span>{question}</span>
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#2d5e55]/10 text-[#2d5e55] transition group-open:rotate-45">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#0a2a6b]/10 text-[#0a2a6b] transition group-open:rotate-45">
           +
         </span>
       </summary>
       <p className="mt-4 text-sm leading-7 text-slate-500">{answer}</p>
     </details>
+  );
+}
+
+function FacilityCard({ facility }: { facility: (typeof facilities)[number] }) {
+  return (
+    <article className="photo-card group relative overflow-hidden rounded-[22px] shadow-[0_20px_55px_rgba(19,27,34,0.12)] sm:rounded-[26px]">
+      <div className="relative h-[220px] w-full overflow-hidden sm:h-[300px]">
+        <Image
+          src={facility.image}
+          alt={facility.title}
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          className="object-cover"
+        />
+        {/* reduced-opacity dark overlay for readable text */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#05123a]/92 via-[#05123a]/45 to-[#05123a]/10 transition-opacity duration-500 group-hover:from-[#0a2a6b]/92 group-hover:via-[#0a2a6b]/40" />
+      </div>
+      <div className="absolute inset-x-0 bottom-0 p-4 sm:p-6">
+        <span className="inline-flex rounded-full bg-white/15 px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-sm sm:px-3 sm:text-[10px] sm:tracking-[0.2em]">
+          {facility.tag}
+        </span>
+        <h3 className="font-display mt-2 text-lg leading-tight text-white sm:mt-3 sm:text-2xl">{facility.title}</h3>
+        {/* visible on mobile (no hover); reveal-on-hover from sm up */}
+        <p className="mt-1.5 text-[12px] leading-5 text-white/85 sm:mt-2 sm:max-h-0 sm:overflow-hidden sm:text-sm sm:leading-6 sm:opacity-0 sm:transition-all sm:duration-500 sm:group-hover:max-h-32 sm:group-hover:opacity-100">
+          {facility.description}
+        </p>
+      </div>
+    </article>
   );
 }
 
@@ -389,19 +532,29 @@ function ServiceTile({
       onPointerEnter={onPointerEnter}
       onPointerLeave={onPointerLeave}
       aria-expanded={active}
-      className="group relative flex h-28 flex-col items-center justify-center rounded-2xl border border-slate-100 bg-white px-3 text-center shadow-sm transition hover:-translate-y-1 hover:shadow-md"
+      className={`group relative flex h-28 flex-col items-center justify-center rounded-2xl border px-2.5 text-center shadow-sm transition hover:-translate-y-1 hover:shadow-lg sm:h-32 sm:px-3 ${
+        active ? "border-[#0a2a6b] bg-[#0a2a6b] text-white" : "border-slate-100 bg-white"
+      }`}
     >
-      <Icon size={22} className="text-[#2d5e55]" />
-      <p className="mt-2 text-xs font-semibold leading-tight text-slate-700">{service.title}</p>
-      <p className="mt-1 text-[10px] leading-tight text-slate-500">{service.short}</p>
+      <span
+        className={`flex h-9 w-9 items-center justify-center rounded-full transition sm:h-11 sm:w-11 ${
+          active ? "bg-white/15" : "bg-[#0a2a6b]/10 group-hover:bg-[#0a2a6b]/15"
+        }`}
+      >
+        <Icon size={20} className={`shrink-0 ${active ? "text-white" : "text-[#0a2a6b]"}`} />
+      </span>
+      <p className={`mt-2 text-[11px] font-semibold leading-tight sm:mt-2.5 sm:text-xs ${active ? "text-white" : "text-slate-700"}`}>
+        {service.title}
+      </p>
+      <p className={`mt-1 text-[9px] leading-tight sm:text-[10px] ${active ? "text-white/75" : "text-slate-500"}`}>
+        {service.short}
+      </p>
     </button>
   );
 }
 
 function NavLink({ children }: { children: string }) {
-  return (
-    <span className="text-sm font-medium text-white/80 transition hover:text-white">{children}</span>
-  );
+  return <span className="cursor-pointer text-sm font-medium text-white/80 transition hover:text-white">{children}</span>;
 }
 
 export default function HomePage() {
@@ -410,6 +563,70 @@ export default function HomePage() {
   const tileRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const popoverRef = useRef<HTMLDivElement | null>(null);
   const closeTimer = useRef<number | null>(null);
+  const rootRef = useRef<HTMLElement | null>(null);
+
+  // ---- GSAP animations ----
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      // Hero entrance timeline
+      gsap
+        .timeline({ defaults: { ease: "power3.out" } })
+        .from(".hero-fade", { y: 32, opacity: 0, duration: 0.85, stagger: 0.12, delay: 0.15 })
+        .from(".hero-float", { y: 40, opacity: 0, duration: 0.8, stagger: 0.15 }, "-=0.5");
+
+      // Hero background parallax
+      gsap.to(".hero-bg", {
+        yPercent: 14,
+        ease: "none",
+        scrollTrigger: { trigger: ".hero-section", start: "top top", end: "bottom top", scrub: true }
+      });
+
+      // Generic reveal-on-scroll
+      gsap.utils.toArray<HTMLElement>(".reveal").forEach((el) => {
+        gsap.to(el, {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power3.out",
+          scrollTrigger: { trigger: el, start: "top 88%" },
+          startAt: { y: 44 }
+        });
+      });
+
+      // Staggered groups (cards / grids)
+      gsap.utils.toArray<HTMLElement>(".reveal-group").forEach((group) => {
+        gsap.to(group.children, {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          stagger: 0.09,
+          ease: "power3.out",
+          scrollTrigger: { trigger: group, start: "top 84%" },
+          startAt: { y: 46 }
+        });
+      });
+
+      // Count-up stats
+      gsap.utils.toArray<HTMLElement>(".count").forEach((el) => {
+        const target = Number(el.dataset.target ?? 0);
+        const counter = { value: 0 };
+        gsap.to(counter, {
+          value: target,
+          duration: 1.8,
+          ease: "power2.out",
+          scrollTrigger: { trigger: el, start: "top 90%" },
+          onUpdate: () => {
+            el.textContent = Math.floor(counter.value).toLocaleString();
+          }
+        });
+      });
+    }, rootRef);
+
+    return () => ctx.revert();
+  }, []);
 
   const clearCloseTimer = useCallback(() => {
     if (closeTimer.current !== null) {
@@ -451,8 +668,7 @@ export default function HomePage() {
       placement = "top";
     }
 
-    const clamp = (value: number, minimum: number, maximum: number) =>
-      Math.max(minimum, Math.min(value, maximum));
+    const clamp = (value: number, minimum: number, maximum: number) => Math.max(minimum, Math.min(value, maximum));
 
     let top = rect.top + rect.height / 2;
     let left = rect.left + rect.width / 2;
@@ -503,7 +719,7 @@ export default function HomePage() {
       ? createPortal(
           <div
             ref={popoverRef}
-            className="fixed z-[999] w-[min(320px,88vw)] rounded-[22px] bg-[#1f2732] p-4 text-left text-white shadow-[0_20px_60px_rgba(0,0,0,0.22)]"
+            className="fixed z-[999] w-[min(320px,88vw)] rounded-[22px] bg-[#071a45] p-4 text-left text-white shadow-[0_20px_60px_rgba(0,0,0,0.22)]"
             style={{
               left: popover.left,
               top: popover.top,
@@ -524,7 +740,7 @@ export default function HomePage() {
             <ul className="mt-3 space-y-2 text-left text-sm text-white/80">
               {popover.service.details.map((detail) => (
                 <li key={detail} className="flex gap-2">
-                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#8fd3bf]" />
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#f5b301]" />
                   <span>{detail}</span>
                 </li>
               ))}
@@ -535,17 +751,21 @@ export default function HomePage() {
       : null;
 
   return (
-    <main className="overflow-hidden bg-[var(--background)]">
-      <section className="bg-[#2d5e55] text-white">
+    <main ref={rootRef} className="overflow-hidden bg-[var(--background)]">
+      {/* ================= HERO ================= */}
+      <section className="hero-section relative isolate overflow-hidden text-white">
+        {/* background photo + reduced-opacity overlay */}
+        <div className="absolute inset-0 -z-10">
+          <Image src={buildingImg} alt="Police Hospital, Police College Ikeja" fill priority sizes="100vw" className="hero-bg scale-110 object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0d2f7a]/95 via-[#0a2a6b]/90 to-[#05123a]/95" />
+          {/* faint line-art watermark (low opacity) */}
+          <Image src={lineArt1} alt="" aria-hidden className="watermark absolute -right-16 top-24 w-[520px] max-w-[70%] opacity-[0.06]" />
+        </div>
+
         <div className="section-shell">
           <header className="relative flex items-center justify-between py-5 sm:py-6">
             <div className="flex items-center gap-2 sm:gap-3">
-              <Image
-                src={brandLogo}
-                alt="Police Hospital brand"
-                className="h-11 w-11 object-contain sm:h-16 sm:w-16"
-                priority
-              />
+              <Image src={brandLogo} alt="Police Hospital brand" className="h-11 w-11 object-contain sm:h-16 sm:w-16" priority />
               <div>
                 <p className="font-display text-xl leading-none tracking-tight sm:text-2xl">Police Hospital</p>
                 <p className="mt-1 text-[9px] uppercase tracking-[0.2em] text-white/60 sm:text-[11px] sm:tracking-[0.28em]">
@@ -555,16 +775,44 @@ export default function HomePage() {
             </div>
 
             <nav className="hidden items-center gap-7 lg:flex">
-              {navLinks.map((link) => (
-                <NavLink key={link}>{link}</NavLink>
-              ))}
+              {navLinks
+                .filter((link) => link !== "Login")
+                .map((link) => (
+                  <NavLink key={link}>{link}</NavLink>
+                ))}
+
+              {/* Login dropdown */}
+              <div className="group relative">
+                <button
+                  type="button"
+                  className="flex items-center gap-1 text-sm font-medium text-white/80 transition hover:text-white"
+                >
+                  Login <CaretDown size={12} weight="bold" className="transition-transform group-hover:rotate-180" />
+                </button>
+                <div className="invisible absolute right-0 top-full z-30 pt-3 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
+                  <div className="w-52 rounded-2xl bg-white p-2 shadow-[0_20px_50px_rgba(5,18,58,0.22)]">
+                    <Link
+                      href="/login/patient"
+                      className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-[#0a2a6b] transition hover:bg-slate-50"
+                    >
+                      <UserCircle size={20} weight="fill" className="text-[#0a2a6b]" /> Patient Login
+                    </Link>
+                    <Link
+                      href="/login/staff"
+                      className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-[#0a2a6b] transition hover:bg-slate-50"
+                    >
+                      <IdentificationCard size={20} weight="fill" className="text-[#1f8f4e]" /> Staff Login
+                    </Link>
+                  </div>
+                </div>
+              </div>
             </nav>
 
             <div className="hidden lg:block">
               <a
                 href="#consult"
                 className="rounded-full bg-white px-5 py-3 text-sm font-semibold shadow-sm transition hover:-translate-y-0.5"
-                style={{ color: "#1f2732" }}
+                style={{ color: "#071a45" }}
               >
                 Book Now
               </a>
@@ -572,35 +820,65 @@ export default function HomePage() {
 
             <button
               type="button"
-              className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold shadow-sm transition hover:-translate-y-0.5 lg:hidden"
-              style={{ color: "#1f2732" }}
+              className="relative z-30 flex h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-white/10 lg:hidden"
+              aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
               aria-expanded={mobileMenuOpen}
               aria-controls="mobile-menu"
               onClick={() => setMobileMenuOpen((value) => !value)}
             >
-              <List size={18} />
-              Menu
+              <span className="flex h-4 w-6 flex-col justify-between">
+                <span
+                  className={`h-[2.5px] w-full origin-center rounded-full bg-[#f5b301] transition-all duration-300 ease-in-out ${
+                    mobileMenuOpen ? "translate-y-[6.75px] rotate-45" : ""
+                  }`}
+                />
+                <span
+                  className={`h-[2.5px] w-full rounded-full bg-[#f5b301] transition-all duration-200 ease-in-out ${
+                    mobileMenuOpen ? "scale-x-0 opacity-0" : "opacity-100"
+                  }`}
+                />
+                <span
+                  className={`h-[2.5px] w-full origin-center rounded-full bg-[#f5b301] transition-all duration-300 ease-in-out ${
+                    mobileMenuOpen ? "-translate-y-[6.75px] -rotate-45" : ""
+                  }`}
+                />
+              </span>
             </button>
 
             {mobileMenuOpen ? (
               <div
                 id="mobile-menu"
-                className="absolute right-0 top-full z-20 mt-3 w-[min(280px,88vw)] rounded-[24px] border border-white/15 bg-[#1f2732] p-4 shadow-[0_30px_80px_rgba(0,0,0,0.25)] lg:hidden"
+                className="absolute right-0 top-full z-20 mt-3 w-[min(280px,88vw)] rounded-[24px] border border-white/15 bg-[#071a45] p-4 shadow-[0_30px_80px_rgba(0,0,0,0.25)] lg:hidden"
               >
                 <div className="flex flex-col gap-2">
-                  {navLinks.map((link) => (
-                    <span
-                      key={link}
-                      className="rounded-2xl px-4 py-3 text-sm font-medium text-white/85 transition hover:bg-white/10 hover:text-white"
-                    >
-                      {link}
-                    </span>
-                  ))}
-                  <a
-                    href="#consult"
-                    className="mt-2 rounded-full bg-white px-4 py-3 text-center text-sm font-semibold"
-                    style={{ color: "#1f2732" }}
+                  {navLinks
+                    .filter((link) => link !== "Login")
+                    .map((link) => (
+                      <span
+                        key={link}
+                        className="rounded-2xl px-4 py-3 text-sm font-medium text-white/85 transition hover:bg-white/10 hover:text-white"
+                      >
+                        {link}
+                      </span>
+                    ))}
+
+                  <div className="my-1 h-px bg-white/10" />
+                  <Link
+                    href="/login/patient"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-white/85 transition hover:bg-white/10 hover:text-white"
                   >
+                    <UserCircle size={20} weight="fill" className="text-[#f5b301]" /> Patient Login
+                  </Link>
+                  <Link
+                    href="/login/staff"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-white/85 transition hover:bg-white/10 hover:text-white"
+                  >
+                    <IdentificationCard size={20} weight="fill" className="text-[#f5b301]" /> Staff Login
+                  </Link>
+
+                  <a href="#consult" className="mt-2 rounded-full bg-white px-4 py-3 text-center text-sm font-semibold" style={{ color: "#071a45" }}>
                     Book Now
                   </a>
                 </div>
@@ -608,176 +886,306 @@ export default function HomePage() {
             ) : null}
           </header>
 
-          <div className="mx-auto max-w-4xl pb-12 pt-4 text-center">
-            <p className="text-sm uppercase tracking-[0.3em] text-white/60 max-sm:hidden">
-              Trusted Partner in Specialist Healthcare
-            </p>
-            <h1 className="font-display mx-auto mt-5 max-w-3xl text-3xl leading-[1.1] sm:text-5xl sm:leading-[1.05] lg:text-6xl">
-              A Leading Specialist Healthcare Institution 
-            </h1>
-            <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/70 sm:text-base">
-              Committed to delivering exceptional, patient-centered medical services through clinical excellence, innovation, and compassion
-            </p>
+          <div className="grid items-center gap-10 pb-16 pt-8 lg:grid-cols-[1.05fr_0.95fr] lg:pb-24 lg:pt-12">
+            <div className="max-w-2xl">
+              <p className="hero-fade inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/80 backdrop-blur-sm">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#f5b301]" />
+                Trusted Partner in Specialist Healthcare
+              </p>
+              <h1 className="hero-fade font-display mt-4 text-3xl leading-[1.1] sm:mt-5 sm:text-5xl sm:leading-[1.05] lg:text-6xl">
+                A Leading Specialist Healthcare Institution
+              </h1>
+              <p className="hero-fade mt-4 max-w-xl text-[13px] leading-6 text-white/75 sm:mt-5 sm:text-base sm:leading-7">
+                Committed to delivering exceptional, patient-centered medical services through clinical excellence,
+                innovation, and compassion — for police personnel, their families, and the general public.
+              </p>
 
-            <div className="mx-auto mt-8 flex max-w-2xl flex-row items-stretch gap-3">
-              <div className="flex min-w-0 flex-1 items-center gap-3 rounded-full bg-white/10 px-4 py-3 text-left text-sm text-white/70 shadow-[0_20px_60px_rgba(0,0,0,0.12)] sm:px-5">
-                <MagnifyingGlass size={18} />
-                <span className="truncate">Search disease, department</span>
+              <div className="hero-fade mt-8 flex max-w-xl flex-row items-stretch gap-3">
+                <div className="flex min-w-0 flex-1 items-center gap-3 rounded-full bg-white/12 px-4 py-3 text-left text-sm text-white/75 shadow-[0_20px_60px_rgba(0,0,0,0.16)] backdrop-blur-sm sm:px-5">
+                  <MagnifyingGlass size={18} />
+                  <span className="truncate">Search disease, department</span>
+                </div>
+                <button className="shrink-0 rounded-full bg-[#f5b301] px-5 py-3 text-sm font-semibold text-[#071a45] shadow-[0_20px_60px_rgba(0,0,0,0.16)] transition hover:-translate-y-0.5 hover:bg-[#ffc21f] sm:px-6">
+                  Search
+                </button>
               </div>
-              <button className="shrink-0 rounded-full bg-white px-4 py-3 text-sm font-semibold text-[#2d5e55] shadow-[0_20px_60px_rgba(0,0,0,0.12)] transition hover:-translate-y-0.5 sm:px-6">
-                Search
-              </button>
+
+              <div className="hero-fade mt-7 flex flex-wrap items-center gap-x-5 gap-y-2.5 text-[13px] text-white/75 sm:mt-8 sm:gap-x-6 sm:gap-y-3 sm:text-sm">
+                <span className="flex items-center gap-2"><Ambulance size={16} weight="fill" className="shrink-0 text-[#f5b301]" /> 24/7 Emergency</span>
+                <span className="flex items-center gap-2"><Stethoscope size={16} weight="fill" className="shrink-0 text-[#f5b301]" /> Specialist Consultants</span>
+                <span className="flex items-center gap-2"><Heartbeat size={16} weight="fill" className="shrink-0 text-[#f5b301]" /> NHIA / HMO Accredited</span>
+              </div>
+            </div>
+
+            {/* Hero collage using real portraits */}
+            <div className="relative mx-auto hidden h-[440px] w-full max-w-md lg:block">
+              <div className="hero-float absolute right-0 top-0 h-[300px] w-[220px] overflow-hidden rounded-[28px] border border-white/15 shadow-2xl">
+                <Image src={doctorImg} alt="Hospital doctor" fill sizes="220px" className="object-cover" />
+              </div>
+              <div className="hero-float absolute bottom-0 left-0 h-[260px] w-[200px] overflow-hidden rounded-[28px] border border-white/15 shadow-2xl">
+                <Image src={nurseImg} alt="Hospital nurse" fill sizes="200px" className="object-cover" />
+              </div>
+              <div className="hero-float absolute bottom-8 right-2 rounded-2xl bg-white px-5 py-4 text-[#071a45] shadow-xl">
+                <p className="font-display text-3xl leading-none text-[#0a2a6b]">100%</p>
+                <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">Patient-First Care</p>
+              </div>
+              <div className="hero-float absolute left-3 top-6 rounded-2xl bg-[#071a45] px-4 py-3 shadow-xl">
+                <p className="text-[10px] uppercase tracking-[0.22em] text-white/55">Comprehensive</p>
+                <p className="text-sm font-semibold">Diagnosis & Care</p>
+              </div>
             </div>
           </div>
+        </div>
 
-          <div className="relative mx-auto max-w-5xl pb-20 pt-2">
-            <div className="relative mx-auto h-[420px] max-w-4xl">
-              <Image src={heroImage} alt="Hero feature" fill className="object-contain object-center" priority />
-              <div className="absolute left-5 top-5 rounded-2xl bg-white/90 px-4 py-3 shadow-lg">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#2d5e55]">
-                  Comprehensive Diagnosis
+        {/* stat bar */}
+        <div className="relative border-t border-white/10 bg-[#05123a]/50 backdrop-blur-sm">
+          <div className="section-shell reveal-group grid grid-cols-2 gap-6 py-8 sm:py-10 lg:grid-cols-4">
+            {stats.map((stat) => (
+              <div key={stat.label} className="text-center lg:text-left">
+                <p className="font-display text-3xl text-white sm:text-5xl">
+                  <span className="count" data-target={stat.target}>0</span>
+                  {stat.suffix}
                 </p>
+                <p className="mt-1 text-[10px] font-medium uppercase tracking-[0.12em] text-white/60 sm:text-xs sm:tracking-[0.14em]">{stat.label}</p>
               </div>
-
-              <div className="absolute bottom-7 right-7 rounded-full bg-[#262d39] px-6 py-4 text-center text-white shadow-xl">
-                <p className="text-xs uppercase tracking-[0.25em] text-white/50">Quality Care</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="section-shell py-16 sm:py-24">
-        <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
-          <SectionTitle
-            title="Police Hospital Key Features"
-            subtitle="Police College Hospital Ikeja is an Ultramodern Specialist Hospital and a state-of-the-art healthcare facility designed to provide highly specialized medical services for all Police officers,their families and the general public"
-          />
-          <div className="space-y-4 text-sm leading-7 text-slate-500">
-            <p>
-              using modern technology, infrastructure, and a multidisciplinary team of healthcare professionals. It offers comprehensive diagnosis, treatment, surgery, rehabilitation, and preventive care across multiple medical specialties while prioritizing patient safety, comfort, and quality of care.
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {keyFeatures.map((feature) => {
-            const Icon = feature.icon;
-            return (
-              <article key={feature.title} className="flex flex-col items-center text-center">
-                <Icon size={32} className="mx-auto text-[#2d5e55]" />
-                <h3 className="mt-5 font-display text-2xl text-slate-800">{feature.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-slate-500">{feature.description}</p>
-              </article>
-            );
-          })}
-        </div>
-      </section>
-
-      <section className="section-shell pb-16 sm:pb-24">
-        <div className="mx-auto w-full max-w-[590px] overflow-hidden rounded-[36px] bg-[#1f2732] text-white shadow-[0_30px_80px_rgba(24,30,39,0.16)]">
-          <div className="relative flex items-start justify-between gap-4 px-6 py-8 sm:px-8 sm:py-10 lg:px-12 lg:py-12">
-            <div className="max-w-[220px] sm:max-w-md">
-              <h2 className="font-display max-w-md text-3xl leading-tight sm:text-4xl">
-                Teleconsult Our Patient Advisors
-              </h2>
-            </div>
-
-            <div className="relative shrink-0">
-              <div className="absolute inset-0 rounded-full bg-white/20 animate-ping" />
-              <div className="relative rounded-full bg-white/20 p-4 text-white sm:p-5">
-                <Phone size={32} weight="fill" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="section-shell pb-16 sm:pb-24">
-        <div>
-          <div className="mx-auto max-w-4xl text-center">
-            <SectionTitle
-              title="Our Services"
-              centered
-            />
-            <div className="mt-4 space-y-4 text-sm leading-7 text-slate-500">
-              <p>
-                At Police College Hospital Ikeja, we are committed to providing high-quality, patient-centred
-                healthcare through a broad range of specialist and general medical services. Our experienced
-                healthcare professionals work collaboratively to deliver timely, safe, and evidence-based care using
-                modern medical practices and advanced diagnostic support.
-              </p>
-              <p>
-                Whether you require preventive care, specialist consultation, emergency treatment, or long-term
-                management of a medical condition, we are dedicated to meeting your healthcare needs with
-                professionalism, compassion, and excellence.
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-12 grid grid-cols-2 gap-3 lg:grid-cols-3">
-            {serviceTiles.map((service, index) => (
-              <ServiceTile
-                key={service.title}
-                service={service}
-                active={popover?.service.title === service.title}
-                buttonRef={(element) => {
-                  tileRefs.current[index] = element;
-                }}
-                onClick={() => {
-                  const element = tileRefs.current[index];
-                  if (!element) return;
-
-                  if (popover?.service.title === service.title) {
-                    closePopover();
-                  } else {
-                    openPopover(service, element);
-                  }
-                }}
-                onPointerEnter={(event) => {
-                  if (event.pointerType === "touch") return;
-                  clearCloseTimer();
-                  const element = tileRefs.current[index];
-                  if (!element) return;
-                  openPopover(service, element);
-                }}
-                onPointerLeave={() => {
-                  clearCloseTimer();
-                  closeTimer.current = window.setTimeout(() => {
-                    setPopover((current) =>
-                      current && current.service.title === service.title ? null : current
-                    );
-                  }, 120);
-                }}
-              />
             ))}
           </div>
         </div>
       </section>
 
-      {popoverPortal}
-
-      <section className="bg-[#1f2732] py-16 text-white sm:py-24">
-        <div className="section-shell">
-          <div className="mx-auto max-w-3xl text-center">
-            <h2 className="font-display text-4xl sm:text-5xl">Who We Are</h2>
-            <p className="mt-4 text-sm leading-7 text-white/65">
-              A specialist hospital built on clinical excellence, compassion, innovation, and a deep commitment to
-              patient-centred care.
-            </p>
+      {/* ================= KEY FEATURES ================= */}
+      <section className="relative overflow-hidden">
+        {/* faint line-art watermark (reduced opacity) */}
+        <Image src={teamIllustration} alt="" aria-hidden className="watermark pointer-events-none absolute -left-24 top-10 w-[420px] opacity-[0.05]" />
+        <div className="section-shell py-12 sm:py-24">
+          <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+            <SectionTitle
+              eyebrow="Why Choose Us"
+              title="Police Hospital Key Features"
+              subtitle="An ultramodern specialist hospital and state-of-the-art healthcare facility providing highly specialized medical services for all police officers, their families, and the general public."
+            />
+            <div className="space-y-4 text-sm leading-7 text-slate-500">
+              <p>
+                Using modern technology, infrastructure, and a multidisciplinary team of healthcare professionals, we
+                offer comprehensive diagnosis, treatment, surgery, rehabilitation, and preventive care across multiple
+                specialties — prioritizing patient safety, comfort, and quality of care.
+              </p>
+            </div>
           </div>
 
-          <div className="mt-12 grid gap-10">
+          <div className="reveal-group mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {keyFeatures.map((feature) => {
+              const Icon = feature.icon;
+              return (
+                <article
+                  key={feature.title}
+                  className="group rounded-[22px] border border-slate-100 bg-white p-5 shadow-[0_18px_45px_rgba(19,27,34,0.06)] transition hover:-translate-y-1.5 hover:shadow-[0_28px_65px_rgba(19,27,34,0.1)] sm:rounded-[24px] sm:p-7"
+                >
+                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#0a2a6b]/10 transition group-hover:bg-[#0a2a6b] sm:h-14 sm:w-14 sm:rounded-2xl">
+                    <Icon size={24} className="shrink-0 text-[#0a2a6b] transition group-hover:text-white sm:hidden" />
+                    <Icon size={28} className="hidden shrink-0 text-[#0a2a6b] transition group-hover:text-white sm:block" />
+                  </span>
+                  <h3 className="mt-4 font-display text-xl text-slate-800 sm:mt-5 sm:text-2xl">{feature.title}</h3>
+                  <p className="mt-2 text-[13px] leading-6 text-slate-500 sm:mt-3 sm:text-sm sm:leading-7">{feature.description}</p>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ================= FACILITIES GALLERY ================= */}
+      <section className="bg-[#eef2fb]">
+        <div className="section-shell py-12 sm:py-24">
+          <SectionTitle
+            eyebrow="Our Facilities"
+            title="Modern Departments & Diagnostic Suites"
+            subtitle="From emergency response to advanced imaging, explore the departments that make comprehensive, one-stop specialist care possible."
+            centered
+          />
+          <div className="reveal-group mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {facilities.map((facility) => (
+              <FacilityCard key={facility.title} facility={facility} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================= TELECONSULT CTA ================= */}
+      <section className="section-shell py-12 sm:py-24">
+        <div className="relative overflow-hidden rounded-[36px] bg-gradient-to-br from-[#0a2a6b] via-[#071a45] to-[#05123a] text-white shadow-[0_30px_80px_rgba(5,18,58,0.35)]">
+          {/* gold accent strip + line-art watermark */}
+          <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-[#f5b301] via-[#f5b301]/70 to-[#1f8f4e]" />
+          <Image src={lineArt2} alt="" aria-hidden className="watermark pointer-events-none absolute right-0 top-0 h-full w-auto opacity-[0.06]" />
+
+          <div className="grid items-center gap-10 p-6 sm:gap-12 sm:p-12 lg:grid-cols-2 lg:gap-8">
+            <div className="reveal">
+              <span className="inline-flex items-center gap-2 rounded-full bg-[#f5b301]/15 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#f5b301] sm:px-4 sm:text-[11px] sm:tracking-[0.22em]">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#f5b301]" /> Telemedicine
+              </span>
+              <h2 className="font-display mt-3 max-w-md text-2xl leading-tight sm:mt-4 sm:text-4xl">
+                Teleconsult Our Patient Advisors
+              </h2>
+              <p className="mt-3 max-w-md text-[13px] leading-6 text-white/70 sm:mt-4 sm:text-sm sm:leading-7">
+                Speak with our specialist advisors from anywhere. Get guidance on symptoms, referrals, appointments, and
+                follow-up care — quickly and confidentially.
+              </p>
+
+              <ul className="mt-5 grid max-w-md gap-2.5 text-[13px] text-white/85 sm:mt-6 sm:gap-3 sm:text-sm">
+                {["Same-day virtual consultations", "Specialist referrals & second opinions", "Confidential, secure sessions"].map(
+                  (item) => (
+                    <li key={item} className="flex items-center gap-3">
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#1f8f4e]/20 text-[#4ade80]">
+                        <Check size={13} weight="bold" className="shrink-0" />
+                      </span>
+                      {item}
+                    </li>
+                  )
+                )}
+              </ul>
+
+              <div className="mt-7 flex flex-wrap items-center gap-3">
+                <a
+                  href="#consult"
+                  className="inline-flex items-center gap-2 rounded-full bg-[#f5b301] px-6 py-3 text-sm font-semibold text-[#071a45] shadow-[0_12px_30px_rgba(245,179,1,0.3)] transition hover:-translate-y-0.5 hover:bg-[#ffc21f]"
+                >
+                  <Phone size={18} weight="fill" /> Start a consult
+                </a>
+                <a
+                  href="#consult"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/25 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+                >
+                  <ChatCenteredDots size={18} /> Chat with us
+                </a>
+              </div>
+
+              <p className="mt-5 flex items-center gap-2 text-sm text-white/60">
+                <Phone size={15} weight="fill" className="text-[#f5b301]" /> Hotline: +234 000 000 0000
+              </p>
+            </div>
+
+            {/* framed portrait composition (white-bg cutouts on a light panel) */}
+            <div className="reveal relative mx-auto mt-2 w-[85%] max-w-[300px] sm:mt-0 sm:w-full sm:max-w-[340px]">
+              <div className="absolute -inset-3 rounded-[34px] bg-[#f5b301]/20 blur-2xl sm:-inset-4 sm:rounded-[38px]" />
+              <div className="relative overflow-hidden rounded-[26px] bg-gradient-to-b from-white to-[#eef2fb] p-1.5 shadow-2xl sm:rounded-[30px] sm:p-2">
+                <div className="relative h-[300px] w-full overflow-hidden rounded-[22px] sm:h-[360px] sm:rounded-[24px]">
+                  <Image src={doctorImg} alt="Specialist doctor" fill sizes="(max-width: 640px) 300px, 340px" className="object-cover object-top" />
+                </div>
+              </div>
+
+              {/* floating nurse thumbnail */}
+              <div className="absolute -bottom-4 -left-3 h-20 w-16 overflow-hidden rounded-xl border-4 border-[#071a45] bg-white shadow-xl sm:-bottom-6 sm:-left-6 sm:h-28 sm:w-24 sm:rounded-2xl">
+                <Image src={nurseImg} alt="Patient advisor" fill sizes="(max-width: 640px) 64px, 96px" className="object-cover object-top" />
+              </div>
+
+              {/* green availability chip */}
+              <div className="absolute right-1 top-3 flex items-center gap-1.5 rounded-full bg-[#1f8f4e] px-3 py-1.5 text-[10px] font-semibold shadow-lg sm:-right-3 sm:top-6 sm:gap-2 sm:px-4 sm:py-2 sm:text-xs">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/80" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
+                </span>
+                Available 24/7
+              </div>
+
+              {/* navy call badge */}
+              <div className="absolute -right-1 bottom-6 flex items-center gap-2 rounded-xl bg-[#071a45] px-3 py-2 shadow-xl ring-1 ring-white/10 sm:-right-4 sm:bottom-8 sm:gap-3 sm:rounded-2xl sm:px-4 sm:py-3">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#f5b301] text-[#071a45] sm:h-9 sm:w-9">
+                  <Phone size={16} weight="fill" className="shrink-0" />
+                </span>
+                <div>
+                  <p className="text-[9px] uppercase tracking-[0.14em] text-white/50 sm:text-[10px] sm:tracking-[0.16em]">Call now</p>
+                  <p className="text-[13px] font-semibold sm:text-sm">Talk to a doctor</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= OUR SERVICES (interactive tiles) ================= */}
+      <section className="section-shell pb-12 sm:pb-24">
+        <SectionTitle
+          eyebrow="Our Services"
+          title="Specialist & General Medical Services"
+          subtitle="Committed to high-quality, patient-centred healthcare — whether you need preventive care, specialist consultation, emergency treatment, or long-term management. Hover or tap a service to learn more."
+          centered
+        />
+
+        <div className="reveal-group mt-12 grid grid-cols-2 gap-3 lg:grid-cols-4">
+          {serviceTiles.map((service, index) => (
+            <ServiceTile
+              key={service.title}
+              service={service}
+              active={popover?.service.title === service.title}
+              buttonRef={(element) => {
+                tileRefs.current[index] = element;
+              }}
+              onClick={() => {
+                const element = tileRefs.current[index];
+                if (!element) return;
+
+                if (popover?.service.title === service.title) {
+                  closePopover();
+                } else {
+                  openPopover(service, element);
+                }
+              }}
+              onPointerEnter={(event) => {
+                if (event.pointerType === "touch") return;
+                clearCloseTimer();
+                const element = tileRefs.current[index];
+                if (!element) return;
+                openPopover(service, element);
+              }}
+              onPointerLeave={() => {
+                clearCloseTimer();
+                closeTimer.current = window.setTimeout(() => {
+                  setPopover((current) => (current && current.service.title === service.title ? null : current));
+                }, 120);
+              }}
+            />
+          ))}
+        </div>
+      </section>
+
+      {popoverPortal}
+
+      {/* ================= WHO WE ARE ================= */}
+      <section className="relative overflow-hidden bg-[#071a45] py-12 text-white sm:py-24">
+        <Image src={lineArt1} alt="" aria-hidden className="watermark pointer-events-none absolute -left-20 bottom-0 w-[460px] opacity-[0.05]" />
+        <div className="section-shell">
+          <div className="grid items-center gap-12 lg:grid-cols-2">
+            {/* image collage */}
+            <div className="reveal relative">
+              <div className="relative h-[300px] overflow-hidden rounded-[28px] shadow-2xl sm:h-[380px]">
+                <Image src={staffGroupImg} alt="Police Hospital care team" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#071a45]/60 to-transparent" />
+              </div>
+              <div className="absolute -bottom-8 -right-4 hidden h-[190px] w-[240px] overflow-hidden rounded-[24px] border-4 border-[#071a45] shadow-2xl sm:block">
+                <Image src={buildingImg} alt="Police Hospital building" fill sizes="240px" className="object-cover" />
+              </div>
+            </div>
+
+            <div>
+              <SectionTitle eyebrow="Who We Are" title="Built on Clinical Excellence & Compassion" light />
+              <p className="mt-4 text-sm leading-7 text-white/70">
+                A specialist hospital rooted in clinical excellence, compassion, innovation, and a deep commitment to
+                patient-centred care — serving our community with dignity and professionalism.
+              </p>
+            </div>
+          </div>
+
+          <div className="reveal-group mt-14 grid gap-8 md:grid-cols-2">
             {aboutPanels.map((panel) => (
-              <div key={panel.title} className="space-y-4">
-                <h3 className="font-display text-3xl text-white">{panel.title}</h3>
+              <div key={panel.title} className="rounded-[26px] border border-white/10 bg-white/[0.04] p-7">
+                <h3 className="font-display text-2xl text-white">{panel.title}</h3>
                 {"body" in panel ? (
                   <p className="mt-4 text-sm leading-7 text-white/75">{panel.body}</p>
                 ) : (
-                  <ul className="mt-5 grid grid-cols-2 gap-x-8 gap-y-3 text-sm text-white/80 lg:grid-cols-3">
+                  <ul className="mt-5 grid grid-cols-2 gap-x-6 gap-y-3 text-sm text-white/80">
                     {panel.items.map((item) => (
-                      <li key={item} className="flex gap-3">
-                        <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#8fd3bf]" />
+                      <li key={item} className="flex gap-2.5">
+                        <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#f5b301]" />
                         <span>{item}</span>
                       </li>
                     ))}
@@ -789,14 +1197,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="section-shell py-16 sm:py-24">
-        <div className="mx-auto max-w-4xl text-center">
-          <SectionTitle
-            title="Frequently Asked Questions"
-            centered
-          />
-        </div>
-
+      {/* ================= FAQ ================= */}
+      <section className="section-shell py-12 sm:py-24">
+        <SectionTitle eyebrow="FAQ" title="Frequently Asked Questions" centered />
         <div className="mt-12 grid gap-4">
           {faqItems.map((item) => (
             <FaqItem key={item.question} question={item.question} answer={item.answer} />
@@ -804,10 +1207,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="bg-white/60 py-16 sm:py-24">
+      {/* ================= BLOG ================= */}
+      <section className="bg-white/60 py-12 sm:py-24">
         <div className="section-shell">
-          <SectionTitle title="Latest from the Blog" subtitle="Insights, updates, and patient education from our team" centered />
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+          <SectionTitle eyebrow="From the Blog" title="Insights & Patient Education" subtitle="Updates and health education from our team." centered />
+          <div className="reveal-group mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
             {blogPosts.map((post) => (
               <BlogCard key={post.title} {...post} />
             ))}
@@ -815,37 +1219,49 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ================= CONSULTATION FORM ================= */}
       <section id="consult" className="section-shell py-12 sm:py-20">
-        <div className="overflow-hidden rounded-[28px] bg-[linear-gradient(135deg,#f0ece4_0%,#fbfaf7_55%,#ece7dc_100%)] shadow-[0_20px_60px_rgba(35,43,50,0.09)]">
-          <div className="px-6 py-10 sm:px-8 sm:py-12 lg:px-12 lg:py-14">
-            <div className="p-6 sm:p-8 lg:p-9">
-              <h2 className="font-display text-3xl text-[#2d5e55] sm:text-4xl">Book A Free Consultation</h2>
-              <form className="mt-6 grid gap-3 sm:grid-cols-2">
-                {["First Name", "Last Name", "Email", "Mobile Number"].map((field) => (
-                  <input
-                    key={field}
-                    placeholder={field}
-                    className="rounded-full border-0 bg-white px-5 py-3 text-sm outline-none ring-1 ring-black/5 placeholder:text-slate-400 focus:ring-2 focus:ring-[#2d5e55]/35"
-                  />
-                ))}
-                <textarea
-                  placeholder="Message"
-                  className="min-h-24 rounded-[22px] border-0 bg-white px-5 py-3 text-sm outline-none ring-1 ring-black/5 placeholder:text-slate-400 focus:ring-2 focus:ring-[#2d5e55]/35 sm:col-span-2"
-                />
-                <div className="sm:col-span-2">
-                  <button className="rounded-full bg-[#1f2732] px-6 py-3 text-sm font-semibold text-white">
-                    Submit
-                  </button>
-                </div>
-              </form>
+        <div className="grid overflow-hidden rounded-[28px] shadow-[0_20px_60px_rgba(35,43,50,0.12)] lg:grid-cols-2">
+          <div className="relative hidden min-h-[420px] lg:block">
+            <Image src={dentalImg} alt="Care in action at Police Hospital" fill sizes="50vw" className="object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0a2a6b]/85 via-[#0a2a6b]/45 to-[#0a2a6b]/25" />
+            <div className="absolute bottom-8 left-8 right-8 text-white">
+              <h3 className="font-display text-3xl leading-tight">Your health, our priority</h3>
+              <p className="mt-2 text-sm leading-7 text-white/80">
+                Book a free consultation and let our specialists guide your care with compassion and expertise.
+              </p>
             </div>
+          </div>
+
+          <div className="bg-[linear-gradient(135deg,#e9eefc_0%,#ffffff_55%,#fdf3d6_100%)] px-6 py-10 sm:px-8 sm:py-12 lg:px-12">
+            <h2 className="font-display text-2xl text-[#0a2a6b] sm:text-4xl">Book A Free Consultation</h2>
+            <p className="mt-2 text-[13px] leading-6 text-slate-500 sm:text-sm sm:leading-7">Fill in your details and we'll reach out to schedule your visit.</p>
+            <form className="mt-6 grid gap-3 sm:grid-cols-2">
+              {["First Name", "Last Name", "Email", "Mobile Number"].map((field) => (
+                <input
+                  key={field}
+                  placeholder={field}
+                  className="rounded-full border-0 bg-white px-5 py-3 text-sm outline-none ring-1 ring-black/5 placeholder:text-slate-400 focus:ring-2 focus:ring-[#0a2a6b]/35"
+                />
+              ))}
+              <textarea
+                placeholder="Message"
+                className="min-h-24 rounded-[22px] border-0 bg-white px-5 py-3 text-sm outline-none ring-1 ring-black/5 placeholder:text-slate-400 focus:ring-2 focus:ring-[#0a2a6b]/35 sm:col-span-2"
+              />
+              <div className="sm:col-span-2">
+                <button className="inline-flex items-center gap-2 rounded-full bg-[#071a45] px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5">
+                  Submit <ArrowRight size={16} />
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </section>
 
-      <footer className="bg-[#2d5e55] py-14 text-white">
+      {/* ================= FOOTER ================= */}
+      <footer className="bg-[#0a2a6b] py-14 text-white sm:py-16">
         <div className="section-shell">
-          <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
+          <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:justify-between lg:gap-16">
             <div className="max-w-sm">
               <div className="flex items-center gap-3">
                 <Image src={brandLogo} alt="Police Hospital brand" className="h-12 w-12 object-contain" />
@@ -865,22 +1281,26 @@ export default function HomePage() {
                 <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-white/50">About</h3>
                 <ul className="mt-4 space-y-3 text-sm text-white/75">
                   <li>How it works</li>
-                  <li>Patient care</li>
-                  <li>Staff access</li>
+                  <li>
+                    <Link href="/login/patient" className="transition hover:text-white">Patient care</Link>
+                  </li>
+                  <li>
+                    <Link href="/login/staff" className="transition hover:text-white">Staff access</Link>
+                  </li>
                   <li>Support</li>
                 </ul>
               </div>
               <div>
                 <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-white/50">Contact</h3>
                 <ul className="mt-4 space-y-3 text-sm text-white/75">
-                  <li className="flex items-center gap-2">
-                    <MapPin size={16} /> Police Hospital, Nigeria
+                  <li className="flex items-start gap-2.5">
+                    <MapPin size={16} className="mt-0.5 shrink-0 text-[#f5b301]" /> Police College, GRA Ikeja, Lagos
                   </li>
-                  <li className="flex items-center gap-2">
-                    <Phone size={16} /> +234 000 000 0000
+                  <li className="flex items-start gap-2.5">
+                    <Phone size={16} className="mt-0.5 shrink-0 text-[#f5b301]" /> +234 000 000 0000
                   </li>
-                  <li className="flex items-center gap-2">
-                    <ChatCenteredDots size={16} /> help@policehospital.ng
+                  <li className="flex items-start gap-2.5">
+                    <ChatCenteredDots size={16} className="mt-0.5 shrink-0 text-[#f5b301]" /> help@policehospital.ng
                   </li>
                 </ul>
               </div>
@@ -894,11 +1314,16 @@ export default function HomePage() {
               </div>
               <div>
                 <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-white/50">Follow</h3>
-                <div className="mt-4 flex gap-3">
+                <div className="mt-4 flex flex-wrap gap-2.5">
                   {[FacebookLogo, InstagramLogo, LinkedinLogo, YoutubeLogo, X].map((Icon, index) => (
-                    <div key={index} className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10">
-                      <Icon size={18} />
-                    </div>
+                    <a
+                      key={index}
+                      href="#"
+                      aria-label="Social link"
+                      className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/10 transition hover:-translate-y-0.5 hover:bg-[#f5b301] hover:text-[#071a45] hover:ring-[#f5b301]"
+                    >
+                      <Icon size={18} className="shrink-0" />
+                    </a>
                   ))}
                 </div>
               </div>
