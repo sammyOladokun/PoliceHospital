@@ -124,7 +124,7 @@ export default function StaffDashboardPage() {
         <div className="px-5 py-6 sm:px-8 sm:py-8">
           <div>
             <h2 className="font-display text-2xl text-[#0a2a6b] sm:text-3xl">Good morning, Dr. Okafor</h2>
-            <p className="mt-1 text-[13px] text-slate-500 sm:text-sm">Here's your clinical snapshot for today.</p>
+            <p className="mt-1 text-[13px] text-slate-500 sm:text-sm">{"Here's your clinical snapshot for today."}</p>
           </div>
 
           {/* Stats */}
@@ -174,7 +174,7 @@ export default function StaffDashboardPage() {
 
             {/* Today's schedule */}
             <div className="rounded-2xl border border-slate-100 bg-white p-6 shadow-[0_10px_30px_rgba(19,27,34,0.05)]">
-              <h3 className="font-display text-xl text-[#0a2a6b]">Today's schedule</h3>
+              <h3 className="font-display text-xl text-[#0a2a6b]">{"Today's schedule"}</h3>
               <ul className="mt-4 space-y-3">
                 {schedule.map((slot) => (
                   <li key={slot.time} className="flex gap-3">

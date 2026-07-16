@@ -1235,7 +1235,7 @@ export default function HomePage() {
 
           <div className="bg-[linear-gradient(135deg,#e9eefc_0%,#ffffff_55%,#fdf3d6_100%)] px-6 py-10 sm:px-8 sm:py-12 lg:px-12">
             <h2 className="font-display text-2xl text-[#0a2a6b] sm:text-4xl">Book A Free Consultation</h2>
-            <p className="mt-2 text-[13px] leading-6 text-slate-500 sm:text-sm sm:leading-7">Fill in your details and we'll reach out to schedule your visit.</p>
+            <p className="mt-2 text-[13px] leading-6 text-slate-500 sm:text-sm sm:leading-7">{"Fill in your details and we'll reach out to schedule your visit."}</p>
             <form className="mt-6 grid gap-3 sm:grid-cols-2">
               {["First Name", "Last Name", "Email", "Mobile Number"].map((field) => (
                 <input

@@ -120,7 +120,7 @@ export default function PatientDashboardPage() {
         <div className="px-5 py-6 sm:px-8 sm:py-8">
           <div>
             <h2 className="font-display text-2xl text-[#0a2a6b] sm:text-3xl">Welcome back, Victor 👋</h2>
-            <p className="mt-1 text-[13px] text-slate-500 sm:text-sm">Here's a quick look at your care today.</p>
+            <p className="mt-1 text-[13px] text-slate-500 sm:text-sm">{"Here's a quick look at your care today."}</p>
           </div>
 
           {/* Stats */}
