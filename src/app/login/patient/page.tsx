@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { primaryPhone } from "@/lib/contact";
 import brandLogo from "../../../../assets/brand_logo.png";
 import sideImg from "../../../../assets/building.jpeg";
 import {
@@ -130,11 +131,22 @@ export default function PatientLoginPage() {
             </button>
           </form>
 
+          {/*
+            No staff-login link here. This page is the public entry point, and
+            pointing patients at the internal staff portal both confuses them and
+            advertises a surface they have no business reaching. Staff reach their
+            portal from /login/staff directly or from the site header.
+          */}
           <p className="mt-6 text-center text-[13px] text-slate-500">
-            Are you a staff member?{" "}
-            <Link href="/login/staff" className="font-semibold text-[#0a2a6b] hover:underline">
-              Staff login
-            </Link>
+            New patient?{" "}
+            <Link href="/#consult" className="font-semibold text-[#0a2a6b] hover:underline">
+              Register at reception
+            </Link>{" "}
+            or call{" "}
+            <a href={`tel:${primaryPhone.tel}`} className="font-semibold text-[#0a2a6b] hover:underline">
+              {primaryPhone.display}
+            </a>
+            .
           </p>
 
           <Link

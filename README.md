@@ -2,6 +2,9 @@
 
 This repo is being set up as a secure hospital platform for Police Hospital with separate access for patients and staff.
 
+> **See [ARCHITECTURE.md](ARCHITECTURE.md)** for the directory layout, the seam that connects this app to the
+> hospital's local HIS server, the build order, and NDPA compliance notes. Read it before adding a feature.
+
 ## Recommended stack
 
 - **Frontend / full-stack app:** Next.js + TypeScript
@@ -40,32 +43,44 @@ This repo is being set up as a secure hospital platform for Police Hospital with
 
 ## Local setup
 
+The public site, search, and department pages run with **no database and no hospital server**
+(`HIS_MODE=local` serves reference data from the repo), so start here:
+
 1. Copy `.env.example` to `.env`
-2. Start infrastructure:
-   ```bash
-   docker compose up -d
-   ```
-3. Install dependencies:
+2. Install dependencies:
    ```bash
    npm install
    ```
-4. Generate Prisma client:
-   ```bash
-   npm run db:generate
-   ```
-5. Push schema to database:
-   ```bash
-   npm run db:push
-   ```
-6. Start the app:
+3. Start the app:
    ```bash
    npm run dev
    ```
 
-## Suggested next build phase
+Postgres is only needed once you start on authentication and the portal (Phase 1 in
+[ARCHITECTURE.md](ARCHITECTURE.md)):
 
-- Scaffold authentication pages
-- Add dashboard shells for patient and staff
-- Build role-based route protection
-- Add appointment booking and queueing
-- Add patient records and staff workflow screens
+```bash
+docker compose up -d     # Postgres + Redis
+npm run db:generate      # Prisma client
+npm run db:push          # apply schema
+```
+
+## Connecting to the hospital's local server
+
+Set these in `.env` and restart. Nothing else changes — every feature reads through the same
+`getHis()` seam.
+
+```ini
+HIS_MODE="fhir"
+HIS_BASE_URL="https://his.pch.local/fhir"   # private network address only
+HIS_API_KEY="..."
+```
+
+Confirm connectivity with `curl http://localhost:3000/api/health` — it reports whether the app can
+see the HIS, and which mode it is running in.
+
+## Build order
+
+See [ARCHITECTURE.md §4](ARCHITECTURE.md#4-build-order-from-here). In short: identity and audit
+first (it gates everything clinical), then the read-only clinical portal, then appointments,
+clinical workflow, and billing/reporting.

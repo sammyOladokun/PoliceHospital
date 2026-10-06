@@ -82,7 +82,52 @@ body {
   user-select: none;
 }
 
+/* --- Shuttle announcement marquee --- */
+.marquee-viewport {
+  /* fade the strip's edges instead of hard-cropping text */
+  mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+}
+.marquee-item {
+  @apply inline-flex shrink-0 items-center gap-2 whitespace-nowrap px-4;
+}
+.marquee-link {
+  @apply rounded-full font-semibold text-white transition-colors hover:bg-white/10 hover:text-[#f5b301] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#f5b301];
+  padding-block: 0.15rem;
+}
+.marquee-dot {
+  @apply h-1 w-1 shrink-0 rounded-full bg-[#f5b301]/70;
+}
+.marquee-bus {
+  @apply inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#f5b301] text-[#071a45];
+  animation: bus-bob 1.6s ease-in-out infinite;
+}
+@keyframes bus-bob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-2px) rotate(-4deg); }
+  75% { transform: translateY(1px) rotate(3deg); }
+}
+
+/* --- Booking dialog entrance --- */
+.booking-overlay {
+  animation: booking-fade 0.25s ease-out;
+}
+.booking-panel {
+  animation: booking-rise 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes booking-fade {
+  from { opacity: 0; }
+}
+@keyframes booking-rise {
+  from { opacity: 0; transform: translateY(32px) scale(0.98); }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .marquee-bus,
+  .booking-overlay,
+  .booking-panel {
+    animation: none;
+  }
+
   .reveal,
   .reveal-group > * {
     opacity: 1 !important;

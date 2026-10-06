@@ -9,10 +9,18 @@ import {
   type ComponentType,
   type PointerEvent as ReactPointerEvent
 } from "react";
+import type { Route } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+import { BookingButton, BookingDialog } from "@/components/booking/BookingButton";
+import { LoginMenu } from "@/components/layout/LoginMenu";
+import { ShuttleMarquee } from "@/components/layout/ShuttleMarquee";
+import { HeroSearch } from "@/components/search/HeroSearch";
+import { phoneLines, primaryPhone } from "@/lib/contact";
+import { SHOW_LOGIN } from "@/lib/features";
 
 import brandLogo from "../../assets/brand_logo.png";
 import buildingImg from "../../assets/building.jpeg";
@@ -46,7 +54,6 @@ import {
   Scan,
   Hospital,
   Syringe,
-  MagnifyingGlass,
   Stethoscope,
   Ambulance,
   DesktopTower,
@@ -57,12 +64,26 @@ import {
   X,
   ArrowRight,
   Check,
-  CaretDown,
   UserCircle,
   IdentificationCard
 } from "@phosphor-icons/react/dist/ssr";
 
-const navLinks = ["Second Opinion", "Medical Tourism", "Client's Talk", "Membership Card", "Testimonials", "Login"];
+/**
+ * Header navigation.
+ *
+ * Every entry must resolve to something real — a route that exists or a section
+ * on this page. The previous list ("Second Opinion", "Medical Tourism",
+ * "Client's Talk", "Membership Card", "Testimonials") rendered as plain spans
+ * with no destination: they looked clickable and did nothing. Add an entry back
+ * only once the page behind it exists.
+ */
+const navLinks: Array<{ label: string; href: string }> = [
+  { label: "Departments", href: "/departments" },
+  { label: "Facilities", href: "#facilities" },
+  { label: "Services", href: "#services" },
+  { label: "FAQ", href: "#faq" },
+  { label: "Contact", href: "#consult" }
+];
 
 const stats = [
   { target: 18, suffix: "+", label: "Specialist Services" },
@@ -553,13 +574,31 @@ function ServiceTile({
   );
 }
 
-function NavLink({ children }: { children: string }) {
-  return <span className="cursor-pointer text-sm font-medium text-white/80 transition hover:text-white">{children}</span>;
+function NavLink({ href, children }: { href: string; children: string }) {
+  // Same-page anchors stay plain <a>; real routes go through <Link> for prefetch.
+  const className =
+    "rounded-full text-sm font-medium text-white/80 transition hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f5b301]";
+
+  if (href.startsWith("#")) {
+    return (
+      <a href={href} className={className}>
+        {children}
+      </a>
+    );
+  }
+
+  return (
+    <Link href={href as Route} className={className}>
+      {children}
+    </Link>
+  );
 }
 
 export default function HomePage() {
   const [popover, setPopover] = useState<PopoverState | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  // Lives here, not in the menu: the menu unmounts when Book Now closes it.
+  const [mobileBookingOpen, setMobileBookingOpen] = useState(false);
   const tileRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const popoverRef = useRef<HTMLDivElement | null>(null);
   const closeTimer = useRef<number | null>(null);
@@ -775,47 +814,22 @@ export default function HomePage() {
             </div>
 
             <nav className="hidden items-center gap-7 lg:flex">
-              {navLinks
-                .filter((link) => link !== "Login")
-                .map((link) => (
-                  <NavLink key={link}>{link}</NavLink>
-                ))}
+              {navLinks.map((link) => (
+                <NavLink key={link.label} href={link.href}>
+                  {link.label}
+                </NavLink>
+              ))}
 
-              {/* Login dropdown */}
-              <div className="group relative">
-                <button
-                  type="button"
-                  className="flex items-center gap-1 text-sm font-medium text-white/80 transition hover:text-white"
-                >
-                  Login <CaretDown size={12} weight="bold" className="transition-transform group-hover:rotate-180" />
-                </button>
-                <div className="invisible absolute right-0 top-full z-30 pt-3 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
-                  <div className="w-52 rounded-2xl bg-white p-2 shadow-[0_20px_50px_rgba(5,18,58,0.22)]">
-                    <Link
-                      href="/login/patient"
-                      className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-[#0a2a6b] transition hover:bg-slate-50"
-                    >
-                      <UserCircle size={20} weight="fill" className="text-[#0a2a6b]" /> Patient Login
-                    </Link>
-                    <Link
-                      href="/login/staff"
-                      className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-[#0a2a6b] transition hover:bg-slate-50"
-                    >
-                      <IdentificationCard size={20} weight="fill" className="text-[#1f8f4e]" /> Staff Login
-                    </Link>
-                  </div>
-                </div>
-              </div>
+              {SHOW_LOGIN ? <LoginMenu /> : null}
             </nav>
 
             <div className="hidden lg:block">
-              <a
-                href="#consult"
+              <BookingButton
                 className="rounded-full bg-white px-5 py-3 text-sm font-semibold shadow-sm transition hover:-translate-y-0.5"
                 style={{ color: "#071a45" }}
               >
                 Book Now
-              </a>
+              </BookingButton>
             </div>
 
             <button
@@ -851,41 +865,69 @@ export default function HomePage() {
                 className="absolute right-0 top-full z-20 mt-3 w-[min(280px,88vw)] rounded-[24px] border border-white/15 bg-[#071a45] p-4 shadow-[0_30px_80px_rgba(0,0,0,0.25)] lg:hidden"
               >
                 <div className="flex flex-col gap-2">
-                  {navLinks
-                    .filter((link) => link !== "Login")
-                    .map((link) => (
-                      <span
-                        key={link}
+                  {navLinks.map((link) =>
+                    link.href.startsWith("#") ? (
+                      <a
+                        key={link.label}
+                        href={link.href}
+                        onClick={() => setMobileMenuOpen(false)}
                         className="rounded-2xl px-4 py-3 text-sm font-medium text-white/85 transition hover:bg-white/10 hover:text-white"
                       >
-                        {link}
-                      </span>
-                    ))}
+                        {link.label}
+                      </a>
+                    ) : (
+                      <Link
+                        key={link.label}
+                        href={link.href as Route}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="rounded-2xl px-4 py-3 text-sm font-medium text-white/85 transition hover:bg-white/10 hover:text-white"
+                      >
+                        {link.label}
+                      </Link>
+                    )
+                  )}
 
-                  <div className="my-1 h-px bg-white/10" />
-                  <Link
-                    href="/login/patient"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-white/85 transition hover:bg-white/10 hover:text-white"
-                  >
-                    <UserCircle size={20} weight="fill" className="text-[#f5b301]" /> Patient Login
-                  </Link>
-                  <Link
-                    href="/login/staff"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-white/85 transition hover:bg-white/10 hover:text-white"
-                  >
-                    <IdentificationCard size={20} weight="fill" className="text-[#f5b301]" /> Staff Login
-                  </Link>
+                  {SHOW_LOGIN ? (
+                    <>
+                      <div className="my-1 h-px bg-white/10" />
+                      <Link
+                        href="/login/patient"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-white/85 transition hover:bg-white/10 hover:text-white"
+                      >
+                        <UserCircle size={20} weight="fill" className="text-[#f5b301]" /> Patient Login
+                      </Link>
+                      <Link
+                        href="/login/staff"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-white/85 transition hover:bg-white/10 hover:text-white"
+                      >
+                        <IdentificationCard size={20} weight="fill" className="text-[#f5b301]" /> Staff Login
+                      </Link>
+                    </>
+                  ) : null}
 
-                  <a href="#consult" className="mt-2 rounded-full bg-white px-4 py-3 text-center text-sm font-semibold" style={{ color: "#071a45" }}>
+                  <button
+                    type="button"
+                    aria-haspopup="dialog"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      setMobileBookingOpen(true);
+                    }}
+                    className="mt-2 rounded-full bg-white px-4 py-3 text-center text-sm font-semibold"
+                    style={{ color: "#071a45" }}
+                  >
                     Book Now
-                  </a>
+                  </button>
                 </div>
               </div>
             ) : null}
           </header>
+        </div>
 
+        <ShuttleMarquee />
+
+        <div className="section-shell">
           <div className="grid items-center gap-10 pb-16 pt-8 lg:grid-cols-[1.05fr_0.95fr] lg:pb-24 lg:pt-12">
             <div className="max-w-2xl">
               <p className="hero-fade inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/80 backdrop-blur-sm">
@@ -900,14 +942,8 @@ export default function HomePage() {
                 innovation, and compassion — for police personnel, their families, and the general public.
               </p>
 
-              <div className="hero-fade mt-8 flex max-w-xl flex-row items-stretch gap-3">
-                <div className="flex min-w-0 flex-1 items-center gap-3 rounded-full bg-white/12 px-4 py-3 text-left text-sm text-white/75 shadow-[0_20px_60px_rgba(0,0,0,0.16)] backdrop-blur-sm sm:px-5">
-                  <MagnifyingGlass size={18} />
-                  <span className="truncate">Search disease, department</span>
-                </div>
-                <button className="shrink-0 rounded-full bg-[#f5b301] px-5 py-3 text-sm font-semibold text-[#071a45] shadow-[0_20px_60px_rgba(0,0,0,0.16)] transition hover:-translate-y-0.5 hover:bg-[#ffc21f] sm:px-6">
-                  Search
-                </button>
+              <div className="hero-fade mt-8">
+                <HeroSearch />
               </div>
 
               <div className="hero-fade mt-7 flex flex-wrap items-center gap-x-5 gap-y-2.5 text-[13px] text-white/75 sm:mt-8 sm:gap-x-6 sm:gap-y-3 sm:text-sm">
@@ -995,7 +1031,7 @@ export default function HomePage() {
       </section>
 
       {/* ================= FACILITIES GALLERY ================= */}
-      <section className="bg-[#eef2fb]">
+      <section id="facilities" className="scroll-mt-8 bg-[#eef2fb]">
         <div className="section-shell py-12 sm:py-24">
           <SectionTitle
             eyebrow="Our Facilities"
@@ -1045,12 +1081,9 @@ export default function HomePage() {
               </ul>
 
               <div className="mt-7 flex flex-wrap items-center gap-3">
-                <a
-                  href="#consult"
-                  className="inline-flex items-center gap-2 rounded-full bg-[#f5b301] px-6 py-3 text-sm font-semibold text-[#071a45] shadow-[0_12px_30px_rgba(245,179,1,0.3)] transition hover:-translate-y-0.5 hover:bg-[#ffc21f]"
-                >
+                <BookingButton className="inline-flex items-center gap-2 rounded-full bg-[#f5b301] px-6 py-3 text-sm font-semibold text-[#071a45] shadow-[0_12px_30px_rgba(245,179,1,0.3)] transition hover:-translate-y-0.5 hover:bg-[#ffc21f]">
                   <Phone size={18} weight="fill" /> Start a consult
-                </a>
+                </BookingButton>
                 <a
                   href="#consult"
                   className="inline-flex items-center gap-2 rounded-full border border-white/25 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
@@ -1059,8 +1092,16 @@ export default function HomePage() {
                 </a>
               </div>
 
-              <p className="mt-5 flex items-center gap-2 text-sm text-white/60">
-                <Phone size={15} weight="fill" className="text-[#f5b301]" /> Hotline: +234 000 000 0000
+              <p className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-white/60">
+                <Phone size={15} weight="fill" className="text-[#f5b301]" /> Hotline:
+                {phoneLines.map((line, index) => (
+                  <span key={line.tel}>
+                    <a href={`tel:${line.tel}`} className="font-semibold text-white/85 transition hover:text-[#f5b301]">
+                      {line.display}
+                    </a>
+                    {index < phoneLines.length - 1 ? " /" : null}
+                  </span>
+                ))}
               </p>
             </div>
 
@@ -1088,22 +1129,25 @@ export default function HomePage() {
               </div>
 
               {/* navy call badge */}
-              <div className="absolute -right-1 bottom-6 flex items-center gap-2 rounded-xl bg-[#071a45] px-3 py-2 shadow-xl ring-1 ring-white/10 sm:-right-4 sm:bottom-8 sm:gap-3 sm:rounded-2xl sm:px-4 sm:py-3">
+              <a
+                href={`tel:${primaryPhone.tel}`}
+                className="absolute -right-1 bottom-6 flex items-center gap-2 rounded-xl bg-[#071a45] px-3 py-2 shadow-xl ring-1 ring-white/10 transition hover:-translate-y-0.5 sm:-right-4 sm:bottom-8 sm:gap-3 sm:rounded-2xl sm:px-4 sm:py-3"
+              >
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#f5b301] text-[#071a45] sm:h-9 sm:w-9">
                   <Phone size={16} weight="fill" className="shrink-0" />
                 </span>
-                <div>
-                  <p className="text-[9px] uppercase tracking-[0.14em] text-white/50 sm:text-[10px] sm:tracking-[0.16em]">Call now</p>
-                  <p className="text-[13px] font-semibold sm:text-sm">Talk to a doctor</p>
-                </div>
-              </div>
+                <span className="block">
+                  <span className="block text-[9px] uppercase tracking-[0.14em] text-white/50 sm:text-[10px] sm:tracking-[0.16em]">Call now</span>
+                  <span className="block text-[13px] font-semibold sm:text-sm">{primaryPhone.display}</span>
+                </span>
+              </a>
             </div>
           </div>
         </div>
       </section>
 
       {/* ================= OUR SERVICES (interactive tiles) ================= */}
-      <section className="section-shell pb-12 sm:pb-24">
+      <section id="services" className="section-shell scroll-mt-8 pb-12 sm:pb-24">
         <SectionTitle
           eyebrow="Our Services"
           title="Specialist & General Medical Services"
@@ -1149,6 +1193,7 @@ export default function HomePage() {
       </section>
 
       {popoverPortal}
+      {mobileBookingOpen ? <BookingDialog onClose={() => setMobileBookingOpen(false)} /> : null}
 
       {/* ================= WHO WE ARE ================= */}
       <section className="relative overflow-hidden bg-[#071a45] py-12 text-white sm:py-24">
@@ -1198,7 +1243,7 @@ export default function HomePage() {
       </section>
 
       {/* ================= FAQ ================= */}
-      <section className="section-shell py-12 sm:py-24">
+      <section id="faq" className="section-shell scroll-mt-8 py-12 sm:py-24">
         <SectionTitle eyebrow="FAQ" title="Frequently Asked Questions" centered />
         <div className="mt-12 grid gap-4">
           {faqItems.map((item) => (
@@ -1220,7 +1265,7 @@ export default function HomePage() {
       </section>
 
       {/* ================= CONSULTATION FORM ================= */}
-      <section id="consult" className="section-shell py-12 sm:py-20">
+      <section id="consult" className="section-shell scroll-mt-8 py-12 sm:py-20">
         <div className="grid overflow-hidden rounded-[28px] shadow-[0_20px_60px_rgba(35,43,50,0.12)] lg:grid-cols-2">
           <div className="relative hidden min-h-[420px] lg:block">
             <Image src={dentalImg} alt="Care in action at Police Hospital" fill sizes="50vw" className="object-cover" />
@@ -1235,7 +1280,10 @@ export default function HomePage() {
 
           <div className="bg-[linear-gradient(135deg,#e9eefc_0%,#ffffff_55%,#fdf3d6_100%)] px-6 py-10 sm:px-8 sm:py-12 lg:px-12">
             <h2 className="font-display text-2xl text-[#0a2a6b] sm:text-4xl">Book A Free Consultation</h2>
-            <p className="mt-2 text-[13px] leading-6 text-slate-500 sm:text-sm sm:leading-7">{"Fill in your details and we'll reach out to schedule your visit."}</p>
+            <p className="mt-2 text-[13px] leading-6 text-slate-500 sm:text-sm sm:leading-7">{"Pick a time yourself, or fill in your details and we'll reach out to schedule your visit."}</p>
+            <BookingButton className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#f5b301] px-6 py-3 text-sm font-semibold text-[#071a45] shadow-[0_12px_30px_rgba(245,179,1,0.25)] transition hover:-translate-y-0.5 hover:bg-[#ffc21f]">
+              See available times <ArrowRight size={16} />
+            </BookingButton>
             <form className="mt-6 grid gap-3 sm:grid-cols-2">
               {["First Name", "Last Name", "Email", "Mobile Number"].map((field) => (
                 <input
@@ -1296,9 +1344,14 @@ export default function HomePage() {
                   <li className="flex items-start gap-2.5">
                     <MapPin size={16} className="mt-0.5 shrink-0 text-[#f5b301]" /> Police College, GRA Ikeja, Lagos
                   </li>
-                  <li className="flex items-start gap-2.5">
-                    <Phone size={16} className="mt-0.5 shrink-0 text-[#f5b301]" /> +234 000 000 0000
-                  </li>
+                  {phoneLines.map((line) => (
+                    <li key={line.tel} className="flex items-start gap-2.5">
+                      <Phone size={16} className="mt-0.5 shrink-0 text-[#f5b301]" />
+                      <a href={`tel:${line.tel}`} className="transition hover:text-white">
+                        {line.display}
+                      </a>
+                    </li>
+                  ))}
                   <li className="flex items-start gap-2.5">
                     <ChatCenteredDots size={16} className="mt-0.5 shrink-0 text-[#f5b301]" /> help@policehospital.ng
                   </li>
