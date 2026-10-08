@@ -28,11 +28,26 @@ export const primaryPhone = phoneLines[0];
  *                    (use the URL from the schedule's "Website embed" option —
  *                    the calendar.app.google short link does not embed)
  *
- * `NEXT_PUBLIC_*` values are inlined at build time, so set it before
- * `npm run build`. Unset → the booking dialog falls back to phone numbers and
- * the callback form.
+ * `NEXT_PUBLIC_BOOKING_URL` overrides the default below; `NEXT_PUBLIC_*` values
+ * are inlined at build time, so set it before `npm run build`. The default is
+ * committed on purpose — a booking link is public, and keeping it here means a
+ * deploy without the env var still gets the calendar.
  */
-export const bookingUrl = process.env.NEXT_PUBLIC_BOOKING_URL?.trim() || null;
+const DEFAULT_BOOKING_URL =
+  "https://calendar.google.com/calendar/appointments/schedules/AcZssZ2zUcnNSQXP3ozrqpqRtiWpVcG0NI-WNEBwc9oWJLkfN8YX6UCHltdk6qJ3CW5Path__UXEbNqW";
+
+export const bookingUrl = process.env.NEXT_PUBLIC_BOOKING_URL?.trim() || DEFAULT_BOOKING_URL;
+
+/** The booking URL as a full page for a new tab (drops the embed-only `gv` flag). */
+export function bookingPageUrl(url: string): string {
+  try {
+    const parsed = new URL(url);
+    parsed.searchParams.delete("gv");
+    return parsed.toString();
+  } catch {
+    return url;
+  }
+}
 
 export type BookingProvider = "calendly" | "google" | "other";
 

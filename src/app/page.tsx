@@ -19,7 +19,7 @@ import { BookingButton, BookingDialog } from "@/components/booking/BookingButton
 import { LoginMenu } from "@/components/layout/LoginMenu";
 import { ShuttleMarquee } from "@/components/layout/ShuttleMarquee";
 import { HeroSearch } from "@/components/search/HeroSearch";
-import { phoneLines, primaryPhone } from "@/lib/contact";
+import { bookingPageUrl, bookingUrl, phoneLines, primaryPhone } from "@/lib/contact";
 import { SHOW_LOGIN } from "@/lib/features";
 
 import brandLogo from "../../assets/brand_logo.png";
@@ -909,10 +909,14 @@ export default function HomePage() {
 
                   <button
                     type="button"
-                    aria-haspopup="dialog"
+                    aria-haspopup={bookingUrl ? undefined : "dialog"}
                     onClick={() => {
                       setMobileMenuOpen(false);
-                      setMobileBookingOpen(true);
+                      if (bookingUrl) {
+                        window.open(bookingPageUrl(bookingUrl), "_blank", "noopener,noreferrer");
+                      } else {
+                        setMobileBookingOpen(true);
+                      }
                     }}
                     className="mt-2 rounded-full bg-white px-4 py-3 text-center text-sm font-semibold"
                     style={{ color: "#071a45" }}

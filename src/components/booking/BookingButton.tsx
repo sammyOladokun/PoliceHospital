@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 import Link from "next/link";
 import { ArrowSquareOut, CalendarCheck, Phone, X } from "@phosphor-icons/react/dist/ssr";
 
-import { bookingEmbedUrl, bookingProvider, bookingUrl, phoneLines } from "@/lib/contact";
+import { bookingEmbedUrl, bookingPageUrl, bookingProvider, bookingUrl, phoneLines } from "@/lib/contact";
 
 const providerLabel = {
   calendly: "Scheduling by Calendly",
@@ -14,9 +14,10 @@ const providerLabel = {
 } as const;
 
 /**
- * "Book Now" trigger. Opens a dialog with the hospital's live scheduling page
- * (Calendly or a Google Calendar appointment schedule, see `lib/contact.ts`)
- * so patients pick a real open slot instead of waiting for a callback.
+ * "Book Now" trigger. Opens the hospital's live scheduling page (Calendly or a
+ * Google Calendar appointment schedule, see `lib/contact.ts`) in a new tab so
+ * patients pick a real open slot; with no booking URL configured it opens a
+ * dialog with the phone lines instead.
  */
 export function BookingButton({
   children,
@@ -30,6 +31,21 @@ export function BookingButton({
   onOpen?: () => void;
 }) {
   const [open, setOpen] = useState(false);
+
+  if (bookingUrl) {
+    return (
+      <a
+        href={bookingPageUrl(bookingUrl)}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={className}
+        style={style}
+        onClick={onOpen}
+      >
+        {children}
+      </a>
+    );
+  }
 
   return (
     <>
