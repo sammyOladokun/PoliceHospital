@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  devIndicators: false,
+  outputFileTracingRoot: process.cwd(),
   typedRoutes: true,
 
   // Emits `.next/standalone` with a self-contained `server.js` and only the
@@ -31,6 +33,10 @@ const nextConfig = {
         headers: [{ key: "Cache-Control", value: "no-store, no-cache, must-revalidate, private" }]
       }
     ];
+  },
+  webpack: (config) => {
+    config.cache = false;
+    return config;
   }
 };
 

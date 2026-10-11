@@ -41,6 +41,7 @@ import xrayImg from "../../assets/lab-subject-2.jpeg";
 import lineArt1 from "../../assets/1.png";
 import lineArt2 from "../../assets/2.png";
 import teamIllustration from "../../assets/3.png";
+import { newsStories } from "./news/news-data";
 
 import {
   ChatCenteredDots,
@@ -130,66 +131,77 @@ const keyFeatures = [
 const facilities = [
   {
     title: "Emergency & Ambulance",
+    slug: "emergency-ambulance",
     tag: "Emergency",
     description: "Rapid emergency response with ambulance services ready to deliver life-saving care around the clock.",
     image: ambulanceImg
   },
   {
     title: "Operating Theatres",
+    slug: "operating-theatres",
     tag: "Surgery",
     description: "Fully equipped theatres supporting safe surgical procedures across multiple specialties.",
     image: surgeryImg
   },
   {
     title: "Dental Clinic",
+    slug: "dental-clinic",
     tag: "Dental",
     description: "Comprehensive dental care, from routine check-ups to specialist treatment and oral surgery.",
     image: dentalImg
   },
   {
     title: "Pharmacy",
+    slug: "pharmacy",
     tag: "Pharmacy",
     description: "A well-stocked pharmacy dispensing quality, affordable medication with professional guidance.",
     image: pharmacyImg
   },
   {
     title: "Medical Laboratory",
+    slug: "medical-laboratory",
     tag: "Diagnostics",
     description: "Modern laboratory systems delivering fast, reliable, and accurate diagnostic testing.",
     image: labImg
   },
   {
     title: "Ultrasound & Antenatal",
+    slug: "ultrasound-antenatal",
     tag: "Imaging",
     description: "Ultrasound imaging and antenatal support for safe pregnancy and women's health.",
     image: ultrasoundImg
   },
   {
     title: "Eye Clinic",
+    slug: "eye-clinic",
     tag: "Ophthalmology",
     description: "Specialist vision care, comprehensive eye examinations, and eye disease management.",
     image: eyeImg
   },
   {
     title: "Optometry Suite",
+    slug: "optometry-suite",
     tag: "Optometry",
     description: "Advanced eye-diagnostic equipment for precise, detailed vision assessment.",
     image: optometryImg
   },
   {
     title: "Physiotherapy",
+    slug: "physiotherapy",
     tag: "Rehabilitation",
     description: "Physiotherapy and rehabilitation to restore mobility, strength, and everyday function.",
     image: physioImg
   },
   {
     title: "Mammography",
+    slug: "mammography",
     tag: "Screening",
     description: "Breast imaging that supports early detection and preventive women's health screening.",
     image: mammographyImg
   },
   {
     title: "Radiology & X-ray",
+    slug: "radiology-xray",
     tag: "Radiology",
     description: "Digital X-ray and medical imaging that support safer, more accurate clinical decisions.",
     image: xrayImg
@@ -294,14 +306,16 @@ const blogPosts = [
     date: "July 2026",
     summary:
       "Learn how specialist-led care improves diagnosis, treatment planning, and long-term patient outcomes across complex medical conditions.",
-    image: labImg
+    image: labImg,
+    href: "/blog/why-specialist-healthcare-matters-for-better-outcomes" as const
   },
   {
     title: "How Modern Diagnostics Support Faster Clinical Decisions",
     date: "July 2026",
     summary:
       "See how laboratory services and medical imaging help clinicians deliver safer, more accurate, and more efficient care.",
-    image: xrayImg
+    image: xrayImg,
+    href: "/blog/how-modern-diagnostics-support-faster-clinical-decisions" as const
   },
   {
     title: "What Patient-Centred Care Looks Like in Practice",
@@ -448,13 +462,23 @@ function BlogCard({
   image,
   title,
   date,
-  summary
+  summary,
+  href
 }: {
   image: (typeof blogPosts)[number]["image"];
   title: string;
   date: string;
   summary: string;
+  href?:
+    | "/blog/why-specialist-healthcare-matters-for-better-outcomes"
+    | "/blog/how-modern-diagnostics-support-faster-clinical-decisions";
 }) {
+  const readArticle = (
+    <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#0a2a6b]">
+      Read article <ArrowRight size={15} />
+    </span>
+  );
+
   return (
     <article className="photo-card group overflow-hidden rounded-[26px] bg-white shadow-[0_18px_50px_rgba(19,27,34,0.08)]">
       <div className="relative h-[180px] overflow-hidden sm:h-[220px]">
@@ -467,11 +491,90 @@ function BlogCard({
       <div className="space-y-2.5 p-5 sm:space-y-3">
         <h3 className="font-display text-xl leading-tight text-slate-800 sm:text-2xl">{title}</h3>
         <p className="text-[13px] leading-6 text-slate-500 sm:text-sm sm:leading-7">{summary}</p>
-        <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#0a2a6b]">
-          Read article <ArrowRight size={15} />
-        </span>
+        {href ? <Link href={href}>{readArticle}</Link> : readArticle}
       </div>
     </article>
+  );
+}
+
+function TeleconsultPanel() {
+  return (
+    <section className="section-shell pb-12 sm:pb-20">
+      <div className="relative overflow-hidden rounded-[36px] bg-gradient-to-br from-[#0a2a6b] via-[#071a45] to-[#05123a] text-white shadow-[0_30px_80px_rgba(5,18,58,0.35)]">
+        <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-[#f5b301] via-[#f5b301]/70 to-[#1f8f4e]" />
+        <Image src={lineArt2} alt="" aria-hidden className="watermark pointer-events-none absolute right-0 top-0 h-full w-auto opacity-[0.06]" />
+        <div className="grid items-center gap-10 p-6 sm:gap-12 sm:p-12 lg:grid-cols-2 lg:gap-8">
+          <div>
+            <span className="inline-flex items-center gap-2 rounded-full bg-[#f5b301]/15 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#f5b301] sm:px-4 sm:text-[11px] sm:tracking-[0.22em]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#f5b301]" /> Telemedicine
+            </span>
+            <h2 className="font-display mt-3 max-w-md text-2xl leading-tight sm:mt-4 sm:text-4xl">Teleconsult Our Patient Advisors</h2>
+            <p className="mt-3 max-w-md text-[13px] leading-6 text-white/70 sm:mt-4 sm:text-sm sm:leading-7">
+              Speak with our specialist advisors from anywhere. Get guidance on symptoms, referrals, appointments, and follow-up care quickly and confidentially.
+            </p>
+            <ul className="mt-5 grid max-w-md gap-2.5 text-[13px] text-white/85 sm:mt-6 sm:gap-3 sm:text-sm">
+              {["Same-day virtual consultations", "Specialist referrals & second opinions", "Confidential, secure sessions"].map((item) => (
+                <li key={item} className="flex items-center gap-3">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#1f8f4e]/20 text-[#4ade80]"><Check size={13} weight="bold" className="shrink-0" /></span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <div className="mt-7 flex flex-wrap items-center gap-3">
+              <a href="#consult" className="inline-flex items-center gap-2 rounded-full bg-[#f5b301] px-6 py-3 text-sm font-semibold text-[#071a45] shadow-[0_12px_30px_rgba(245,179,1,0.3)] transition hover:-translate-y-0.5 hover:bg-[#ffc21f]"><Phone size={18} weight="fill" /> Start a consult</a>
+              <a href="#consult" className="inline-flex items-center gap-2 rounded-full border border-white/25 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"><ChatCenteredDots size={18} /> Chat with us</a>
+            </div>
+            <p className="mt-5 flex items-center gap-2 text-sm text-white/60"><Phone size={15} weight="fill" className="text-[#f5b301]" /> Hotline: +234 000 000 0000</p>
+          </div>
+
+          <div className="relative mx-auto mt-2 w-[85%] max-w-[300px] sm:mt-0 sm:w-full sm:max-w-[340px]">
+            <div className="absolute -inset-3 rounded-[34px] bg-[#f5b301]/20 blur-2xl sm:-inset-4 sm:rounded-[38px]" />
+            <div className="relative overflow-hidden rounded-[26px] bg-gradient-to-b from-white to-[#eef2fb] p-1.5 shadow-2xl sm:rounded-[30px] sm:p-2">
+              <div className="relative h-[300px] w-full overflow-hidden rounded-[22px] sm:h-[360px] sm:rounded-[24px]"><Image src={doctorImg} alt="Specialist doctor" fill sizes="(max-width: 640px) 300px, 340px" className="object-cover object-top" /></div>
+            </div>
+            <div className="absolute -bottom-4 -left-3 h-20 w-16 overflow-hidden rounded-xl border-4 border-[#071a45] bg-white shadow-xl sm:-bottom-6 sm:-left-6 sm:h-28 sm:w-24 sm:rounded-2xl"><Image src={nurseImg} alt="Patient advisor" fill sizes="(max-width: 640px) 64px, 96px" className="object-cover object-top" /></div>
+            <div className="absolute right-1 top-3 flex items-center gap-1.5 rounded-full bg-[#1f8f4e] px-3 py-1.5 text-[10px] font-semibold shadow-lg sm:-right-3 sm:top-6 sm:gap-2 sm:px-4 sm:py-2 sm:text-xs"><span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/80" /><span className="relative inline-flex h-2 w-2 rounded-full bg-white" /></span>Available 24/7</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function NewsPanel() {
+  const [featured, ...updates] = newsStories;
+
+  return (
+    <section className="section-shell py-12 sm:py-24">
+      <div className="overflow-hidden rounded-[32px] border border-white/25 bg-[#0a2a6b]/90 shadow-[0_24px_70px_rgba(5,18,58,0.3)] backdrop-blur-2xl">
+        <div className="flex items-center border-b border-white/15 bg-white/[0.06] px-6 py-4 sm:px-8">
+          <div className="flex items-center gap-3"><span className="h-2.5 w-2.5 rounded-full bg-[#f5b301] shadow-[0_0_16px_rgba(245,179,1,0.85)]" /><p className="text-xs font-bold uppercase tracking-[0.18em] text-white">News Update</p></div>
+        </div>
+        <div className="grid lg:grid-cols-[minmax(0,1.35fr)_minmax(320px,0.65fr)]">
+          <article className="group border-b border-white/15 p-6 sm:p-8 lg:border-b-0 lg:border-r">
+            <div className="relative h-64 overflow-hidden sm:h-80">
+              <Image src={featured.image} alt={featured.title} fill sizes="(max-width: 1024px) 100vw, 65vw" className="object-cover transition duration-500 group-hover:scale-105" />
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#05123a]/70 to-transparent px-5 py-4"><span className="text-xs font-bold uppercase tracking-[0.14em] text-[#f8ca45]">Featured story</span></div>
+            </div>
+            <p className="mt-6 text-xs font-bold uppercase tracking-[0.14em] text-[#9de0b3]">{featured.date} · Patient education</p>
+            <h2 className="font-display mt-3 max-w-2xl text-3xl leading-tight text-white sm:text-5xl">{featured.title}</h2>
+            <p className="mt-3 max-w-2xl text-sm leading-7 text-white/70">{featured.summary}</p>
+            <Link href={`/news/${featured.slug}`} className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-[#f8ca45]">Read featured story <ArrowRight size={16} /></Link>
+          </article>
+          <div className="divide-y divide-white/15">
+            {updates.map((post, index) => (
+              <article key={post.title} className="p-6 sm:p-8">
+                <div className="flex items-center justify-between gap-4"><span className="text-xs font-bold uppercase tracking-[0.14em] text-[#9de0b3]">{post.date}</span><span className="text-xs font-semibold text-white/40">0{index + 2}</span></div>
+                <h3 className="font-display mt-3 text-3xl leading-tight text-white">{post.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-white/70">{post.summary}</p>
+                <Link href={`/news/${post.slug}`} className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#f8ca45]">Read update <ArrowRight size={15} /></Link>
+              </article>
+            ))}
+            <div className="bg-white/[0.07] p-6 sm:p-8"><Link href="/news" className="inline-flex items-center gap-2 text-sm font-bold text-white">Explore all health insights <ArrowRight size={16} /></Link></div>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -491,7 +594,10 @@ function FaqItem({ question, answer }: { question: string; answer: string }) {
 
 function FacilityCard({ facility }: { facility: (typeof facilities)[number] }) {
   return (
-    <article className="photo-card group relative overflow-hidden rounded-[22px] shadow-[0_20px_55px_rgba(19,27,34,0.12)] sm:rounded-[26px]">
+    <Link
+      href={`/facilities/${facility.slug}`}
+      className="photo-card group relative block overflow-hidden rounded-[22px] shadow-[0_20px_55px_rgba(19,27,34,0.12)] sm:rounded-[26px]"
+    >
       <div className="relative h-[220px] w-full overflow-hidden sm:h-[300px]">
         <Image
           src={facility.image}
@@ -513,7 +619,7 @@ function FacilityCard({ facility }: { facility: (typeof facilities)[number] }) {
           {facility.description}
         </p>
       </div>
-    </article>
+    </Link>
   );
 }
 
@@ -623,30 +729,29 @@ export default function HomePage() {
         scrollTrigger: { trigger: ".hero-section", start: "top top", end: "bottom top", scrub: true }
       });
 
-      // Generic reveal-on-scroll
-      gsap.utils.toArray<HTMLElement>(".reveal").forEach((el) => {
-        gsap.to(el, {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: "power3.out",
-          scrollTrigger: { trigger: el, start: "top 88%" },
-          startAt: { y: 44 }
+      // Content is visible by default. ScrollTrigger only adds a small entrance motion
+      // after an item enters the viewport, so a failed animation can never hide a section.
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (!reduceMotion) {
+        gsap.utils.toArray<HTMLElement>(".reveal").forEach((element) => {
+          ScrollTrigger.create({
+            trigger: element,
+            start: "top 88%",
+            once: true,
+            onEnter: () => {
+              gsap.fromTo(element, { y: 24, opacity: 0.65 }, { y: 0, opacity: 1, duration: 0.55, ease: "power3.out", overwrite: "auto" });
+            }
+          });
         });
-      });
 
-      // Staggered groups (cards / grids)
-      gsap.utils.toArray<HTMLElement>(".reveal-group").forEach((group) => {
-        gsap.to(group.children, {
-          opacity: 1,
-          y: 0,
-          duration: 0.7,
-          stagger: 0.09,
-          ease: "power3.out",
-          scrollTrigger: { trigger: group, start: "top 84%" },
-          startAt: { y: 46 }
+        ScrollTrigger.batch(".reveal-group > *", {
+          start: "top 88%",
+          once: true,
+          onEnter: (elements) => {
+            gsap.fromTo(elements, { y: 24, opacity: 0.65 }, { y: 0, opacity: 1, duration: 0.55, stagger: 0.08, ease: "power3.out", overwrite: "auto" });
+          }
         });
-      });
+      }
 
       // Count-up stats
       gsap.utils.toArray<HTMLElement>(".count").forEach((el) => {
@@ -1051,8 +1156,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ================= TELECONSULT CTA ================= */}
-      <section className="section-shell py-12 sm:py-24">
+      {/* ================= HOSPITAL JOURNAL ================= */}
+      <NewsPanel />
+      <section className="hidden">
         <div className="relative overflow-hidden rounded-[36px] bg-gradient-to-br from-[#0a2a6b] via-[#071a45] to-[#05123a] text-white shadow-[0_30px_80px_rgba(5,18,58,0.35)]">
           {/* gold accent strip + line-art watermark */}
           <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-[#f5b301] via-[#f5b301]/70 to-[#1f8f4e]" />
@@ -1257,7 +1363,7 @@ export default function HomePage() {
       </section>
 
       {/* ================= BLOG ================= */}
-      <section className="bg-white/60 py-12 sm:py-24">
+      <section id="blog" className="bg-white/60 py-12 sm:py-24">
         <div className="section-shell">
           <SectionTitle eyebrow="From the Blog" title="Insights & Patient Education" subtitle="Updates and health education from our team." centered />
           <div className="reveal-group mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
@@ -1309,6 +1415,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <TeleconsultPanel />
 
       {/* ================= FOOTER ================= */}
       <footer className="bg-[#0a2a6b] py-14 text-white sm:py-16">
