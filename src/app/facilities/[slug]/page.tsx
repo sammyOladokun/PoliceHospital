@@ -13,8 +13,7 @@ import {
   List,
   Phone,
   Check,
-  ShieldCheck,
-  Stethoscope
+  ShieldCheck
 } from "@phosphor-icons/react/dist/ssr";
 
 import brandLogo from "../../../../assets/brand_logo.png";

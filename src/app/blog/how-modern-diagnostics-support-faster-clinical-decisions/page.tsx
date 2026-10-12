@@ -120,7 +120,7 @@ export default function ModernDiagnosticsArticlePage() {
           <div className="grid gap-10 lg:grid-cols-[minmax(0,760px)_minmax(280px,1fr)] lg:items-start">
             <div className="px-1 py-2 sm:px-0">
               <p className="text-[17px] leading-8 text-slate-600">
-                Faster clinical decisions do not mean rushed decisions. They mean that the right information is available at the right time, so clinicians can assess a patient's needs with confidence. Modern diagnostics play a vital role in making that possible.
+                Faster clinical decisions do not mean rushed decisions. They mean that the right information is available at the right time, so clinicians can assess a patient&apos;s needs with confidence. Modern diagnostics play a vital role in making that possible.
               </p>
 
               <div className="mt-8 space-y-9">
