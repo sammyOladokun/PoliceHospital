@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { Route } from "next";
 
 import { BookingButton } from "@/components/booking/BookingButton";
 import { LoginMenu } from "@/components/layout/LoginMenu";
@@ -14,7 +15,7 @@ const navLinks = [
   { label: "Services", href: "/#services" },
   { label: "FAQ", href: "/#faq" },
   { label: "Contact", href: "/#consult" },
-];
+] as const;
 
 /**
  * Solid header for interior public pages (search, departments).
@@ -30,8 +31,8 @@ export function SiteHeader({
   action?: "book" | "menu";
   navFirstLink?: "departments" | "blogs";
 }) {
-  const firstLink = navFirstLink === "blogs"
-    ? { label: "Blogs", href: "/#blog" }
+  const firstLink: { label: string; href: Route } = navFirstLink === "blogs"
+    ? { label: "Blogs", href: "/#blog" as Route }
     : { label: "Departments", href: "/departments" };
   const pageNavLinks = [firstLink, ...navLinks];
 
@@ -50,7 +51,7 @@ export function SiteHeader({
           <div className="flex items-center gap-5">
             <nav aria-label="Main navigation" className="hidden items-center gap-6 lg:flex">
               {pageNavLinks.map((link) => (
-                <Link key={link.label} href={link.href} className="text-sm font-medium text-white/80 transition hover:text-white">
+                <Link key={link.label} href={link.href as Route} className="text-sm font-medium text-white/80 transition hover:text-white">
                   {link.label}
                 </Link>
               ))}

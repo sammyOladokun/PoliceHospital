@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import type { Route } from "next";
 import { IdentificationCard, UserCircle } from "@phosphor-icons/react/dist/ssr";
 
 import { BookingDialog } from "@/components/booking/BookingButton";
@@ -13,14 +14,14 @@ const menuLinks = [
   { label: "Services", href: "/#services" },
   { label: "FAQ", href: "/#faq" },
   { label: "Contact", href: "/#consult" },
-];
+] as const;
 
 export function SiteMenuButton({
   showLogin,
   firstLink,
 }: {
   showLogin: boolean;
-  firstLink: { label: string; href: string };
+  firstLink: { label: string; href: Route };
 }) {
   const [open, setOpen] = useState(false);
   const [bookingOpen, setBookingOpen] = useState(false);
@@ -51,7 +52,7 @@ export function SiteMenuButton({
             {[firstLink, ...menuLinks].map((link) => (
               <Link
                 key={link.label}
-                href={link.href}
+                href={link.href as Route}
                 onClick={() => setOpen(false)}
                 className="rounded-2xl px-4 py-3 text-sm font-medium text-white/85 transition hover:bg-white/10 hover:text-white"
               >
