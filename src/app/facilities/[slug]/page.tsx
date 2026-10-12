@@ -183,7 +183,7 @@ export default async function FacilityPage({ params }: { params: Promise<{ slug:
           <nav className="hidden items-center gap-5 md:flex">
             <Link href="/" className="text-xs font-bold uppercase tracking-[0.12em] text-white/80 transition hover:text-white">Home</Link>
             <Link href="/#blog" className="text-xs font-bold uppercase tracking-[0.12em] text-white/80 transition hover:text-white">Blog</Link>
-            <Link href="/news" className="text-xs font-bold uppercase tracking-[0.12em] text-white/80 transition hover:text-white">News</Link>
+            <Link href="/blog" className="text-xs font-bold uppercase tracking-[0.12em] text-white/80 transition hover:text-white">Blog</Link>
             <div className="group relative">
               <button type="button" className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.12em] text-white transition">
                 All Facilities <CaretDown size={14} weight="bold" className="transition group-hover:rotate-180" />
@@ -211,7 +211,7 @@ export default async function FacilityPage({ params }: { params: Promise<{ slug:
               <div className="grid gap-1">
                 <Link href="/" className="rounded-xl px-3 py-3 text-sm font-semibold text-white/85 transition hover:bg-white/10 hover:text-white">Home</Link>
                 <Link href="/#blog" className="rounded-xl px-3 py-3 text-sm font-semibold text-white/85 transition hover:bg-white/10 hover:text-white">Blog</Link>
-                <Link href="/news" className="rounded-xl px-3 py-3 text-sm font-semibold text-white/85 transition hover:bg-white/10 hover:text-white">News</Link>
+                <Link href="/blog" className="rounded-xl px-3 py-3 text-sm font-semibold text-white/85 transition hover:bg-white/10 hover:text-white">Blog</Link>
                 <div className="my-1 border-t border-white/15 pt-2"><p className="px-3 pb-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#f8ca45]">All Facilities</p>
                   {facilityLinks.map((item) => (
                     <Link key={item.slug} href={`/facilities/${item.slug}`} className={`flex items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-sm transition hover:bg-white/10 ${item.slug === slug ? "bg-white/10 text-white" : "text-white/75"}`}>

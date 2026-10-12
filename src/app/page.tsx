@@ -63,6 +63,7 @@ import {
   YoutubeLogo,
   X,
   ArrowRight,
+  ArrowUp,
   Check,
   UserCircle,
   IdentificationCard
@@ -81,6 +82,7 @@ const navLinks: Array<{ label: string; href: string }> = [
   { label: "Departments", href: "/departments" },
   { label: "Facilities", href: "#facilities" },
   { label: "Services", href: "#services" },
+  { label: "Blogs", href: "#blog" },
   { label: "FAQ", href: "#faq" },
   { label: "Contact", href: "#consult" }
 ];
@@ -496,50 +498,6 @@ function BlogCard({
   );
 }
 
-function TeleconsultPanel() {
-  return (
-    <section className="section-shell pb-12 sm:pb-20">
-      <div className="relative overflow-hidden rounded-[36px] bg-gradient-to-br from-[#0a2a6b] via-[#071a45] to-[#05123a] text-white shadow-[0_30px_80px_rgba(5,18,58,0.35)]">
-        <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-[#f5b301] via-[#f5b301]/70 to-[#1f8f4e]" />
-        <Image src={lineArt2} alt="" aria-hidden className="watermark pointer-events-none absolute right-0 top-0 h-full w-auto opacity-[0.06]" />
-        <div className="grid items-center gap-10 p-6 sm:gap-12 sm:p-12 lg:grid-cols-2 lg:gap-8">
-          <div>
-            <span className="inline-flex items-center gap-2 rounded-full bg-[#f5b301]/15 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#f5b301] sm:px-4 sm:text-[11px] sm:tracking-[0.22em]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#f5b301]" /> Telemedicine
-            </span>
-            <h2 className="font-display mt-3 max-w-md text-2xl leading-tight sm:mt-4 sm:text-4xl">Teleconsult Our Patient Advisors</h2>
-            <p className="mt-3 max-w-md text-[13px] leading-6 text-white/70 sm:mt-4 sm:text-sm sm:leading-7">
-              Speak with our specialist advisors from anywhere. Get guidance on symptoms, referrals, appointments, and follow-up care quickly and confidentially.
-            </p>
-            <ul className="mt-5 grid max-w-md gap-2.5 text-[13px] text-white/85 sm:mt-6 sm:gap-3 sm:text-sm">
-              {["Same-day virtual consultations", "Specialist referrals & second opinions", "Confidential, secure sessions"].map((item) => (
-                <li key={item} className="flex items-center gap-3">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#1f8f4e]/20 text-[#4ade80]"><Check size={13} weight="bold" className="shrink-0" /></span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <div className="mt-7 flex flex-wrap items-center gap-3">
-              <a href="#consult" className="inline-flex items-center gap-2 rounded-full bg-[#f5b301] px-6 py-3 text-sm font-semibold text-[#071a45] shadow-[0_12px_30px_rgba(245,179,1,0.3)] transition hover:-translate-y-0.5 hover:bg-[#ffc21f]"><Phone size={18} weight="fill" /> Start a consult</a>
-              <a href="#consult" className="inline-flex items-center gap-2 rounded-full border border-white/25 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"><ChatCenteredDots size={18} /> Chat with us</a>
-            </div>
-            <p className="mt-5 flex items-center gap-2 text-sm text-white/60"><Phone size={15} weight="fill" className="text-[#f5b301]" /> Hotline: +234 000 000 0000</p>
-          </div>
-
-          <div className="relative mx-auto mt-2 w-[85%] max-w-[300px] sm:mt-0 sm:w-full sm:max-w-[340px]">
-            <div className="absolute -inset-3 rounded-[34px] bg-[#f5b301]/20 blur-2xl sm:-inset-4 sm:rounded-[38px]" />
-            <div className="relative overflow-hidden rounded-[26px] bg-gradient-to-b from-white to-[#eef2fb] p-1.5 shadow-2xl sm:rounded-[30px] sm:p-2">
-              <div className="relative h-[300px] w-full overflow-hidden rounded-[22px] sm:h-[360px] sm:rounded-[24px]"><Image src={doctorImg} alt="Specialist doctor" fill sizes="(max-width: 640px) 300px, 340px" className="object-cover object-top" /></div>
-            </div>
-            <div className="absolute -bottom-4 -left-3 h-20 w-16 overflow-hidden rounded-xl border-4 border-[#071a45] bg-white shadow-xl sm:-bottom-6 sm:-left-6 sm:h-28 sm:w-24 sm:rounded-2xl"><Image src={nurseImg} alt="Patient advisor" fill sizes="(max-width: 640px) 64px, 96px" className="object-cover object-top" /></div>
-            <div className="absolute right-1 top-3 flex items-center gap-1.5 rounded-full bg-[#1f8f4e] px-3 py-1.5 text-[10px] font-semibold shadow-lg sm:-right-3 sm:top-6 sm:gap-2 sm:px-4 sm:py-2 sm:text-xs"><span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/80" /><span className="relative inline-flex h-2 w-2 rounded-full bg-white" /></span>Available 24/7</div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function FaqItem({ question, answer }: { question: string; answer: string }) {
   return (
     <details className="reveal group rounded-[24px] border border-slate-100 bg-white p-5 shadow-[0_18px_50px_rgba(19,27,34,0.06)]">
@@ -665,12 +623,20 @@ function NavLink({ href, children }: { href: string; children: string }) {
 export default function HomePage() {
   const [popover, setPopover] = useState<PopoverState | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showBackToTop, setShowBackToTop] = useState(false);
   // Lives here, not in the menu: the menu unmounts when Book Now closes it.
   const [mobileBookingOpen, setMobileBookingOpen] = useState(false);
   const tileRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const popoverRef = useRef<HTMLDivElement | null>(null);
   const closeTimer = useRef<number | null>(null);
   const rootRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const updateVisibility = () => setShowBackToTop(window.scrollY > 500);
+    updateVisibility();
+    window.addEventListener("scroll", updateVisibility, { passive: true });
+    return () => window.removeEventListener("scroll", updateVisibility);
+  }, []);
 
   // ---- GSAP animations ----
   useEffect(() => {
@@ -1083,20 +1049,22 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="reveal-group mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          <div className="reveal-group mt-12 divide-y divide-slate-200 lg:grid lg:grid-cols-3 lg:divide-y-0">
             {keyFeatures.map((feature) => {
               const Icon = feature.icon;
               return (
                 <article
                   key={feature.title}
-                  className="group rounded-[22px] border border-slate-100 bg-white p-5 shadow-[0_18px_45px_rgba(19,27,34,0.06)] transition hover:-translate-y-1.5 hover:shadow-[0_28px_65px_rgba(19,27,34,0.1)] sm:rounded-[24px] sm:p-7"
+                  className="group flex gap-4 py-6 transition-colors hover:bg-white/60 sm:gap-6 sm:py-8 lg:border-b lg:border-r lg:border-slate-200 lg:px-6 lg:py-8 [&:nth-child(3n)]:lg:border-r-0 [&:nth-last-child(-n+3)]:lg:border-b-0"
                 >
-                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#0a2a6b]/10 transition group-hover:bg-[#0a2a6b] sm:h-14 sm:w-14 sm:rounded-2xl">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#0a2a6b]/10 transition group-hover:bg-[#0a2a6b] sm:h-14 sm:w-14 sm:rounded-2xl">
                     <Icon size={24} className="shrink-0 text-[#0a2a6b] transition group-hover:text-white sm:hidden" />
                     <Icon size={28} className="hidden shrink-0 text-[#0a2a6b] transition group-hover:text-white sm:block" />
                   </span>
-                  <h3 className="mt-4 font-display text-xl text-slate-800 sm:mt-5 sm:text-2xl">{feature.title}</h3>
-                  <p className="mt-2 text-[13px] leading-6 text-slate-500 sm:mt-3 sm:text-sm sm:leading-7">{feature.description}</p>
+                  <div>
+                    <h3 className="font-display text-xl text-slate-800 sm:text-2xl">{feature.title}</h3>
+                    <p className="mt-2 max-w-3xl text-[13px] leading-6 text-slate-500 sm:text-sm sm:leading-7">{feature.description}</p>
+                  </div>
                 </article>
               );
             })}
@@ -1268,6 +1236,15 @@ export default function HomePage() {
 
       {popoverPortal}
       {mobileBookingOpen ? <BookingDialog onClose={() => setMobileBookingOpen(false)} /> : null}
+      <button
+        type="button"
+        aria-label="Back to top"
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        className={`fixed bottom-5 right-5 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-[#0a2a6b] text-white shadow-lg transition-all duration-300 hover:-translate-y-1 hover:bg-[#123b8e] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#f5b301]/60 sm:bottom-8 sm:right-8 ${showBackToTop ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-3 opacity-0"}`}
+        tabIndex={showBackToTop ? 0 : -1}
+      >
+        <ArrowUp size={21} weight="bold" />
+      </button>
 
       {/* ================= WHO WE ARE ================= */}
       <section className="relative overflow-hidden bg-[#071a45] py-12 text-white sm:py-24">
@@ -1379,8 +1356,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      <TeleconsultPanel />
 
       {/* ================= FOOTER ================= */}
       <footer className="bg-[#0a2a6b] py-14 text-white sm:py-16">

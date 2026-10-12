@@ -29,15 +29,6 @@ const CATEGORY_LABEL: Record<Department["category"], string> = {
   support: "Support Services",
 };
 
-const CARD_GRADIENTS = [
-  "bg-gradient-to-br from-white via-[#f1f5ff] to-[#dfe9ff]",
-  "bg-gradient-to-br from-white via-[#effaf4] to-[#d8f1e2]",
-  "bg-gradient-to-br from-white via-[#fff9e8] to-[#ffedc2]",
-  "bg-gradient-to-br from-white via-[#f7f2ff] to-[#e9ddff]",
-  "bg-gradient-to-br from-white via-[#edfaff] to-[#d4f0f7]",
-  "bg-gradient-to-br from-white via-[#fff1f1] to-[#f9dddd]",
-];
-
 export default async function DepartmentsPage() {
   // If the hospital server is unreachable we still show the published directory
   // rather than an error page — this is public information, not clinical data.
@@ -48,17 +39,24 @@ export default async function DepartmentsPage() {
     departments = seedDepartments;
   }
 
+  const departmentGroups = CATEGORY_ORDER.map((category) => ({
+    category,
+    group: departments.filter((department) => department.category === category),
+  })).filter(({ group }) => group.length > 0);
+
   return (
     <div className="flex min-h-screen flex-col bg-[#f3f5fb]">
       <SiteHeader action="menu" navFirstLink="blogs" />
 
       <main className="relative isolate w-full flex-1 overflow-hidden">
-        <Image
-          src={teamIllustration}
-          alt=""
-          aria-hidden="true"
-          className="pointer-events-none absolute -left-24 top-10 w-[420px] opacity-[0.05]"
-        />
+        <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(10,42,107,0.22),transparent_58%)]" />
+          <Image
+            src={teamIllustration}
+            alt=""
+            className="absolute -left-24 top-20 w-[420px] opacity-[0.05]"
+          />
+        </div>
         <div className="section-shell relative z-10 py-8 sm:py-12">
         <h1 className="font-display text-3xl text-[#0a2a6b] sm:text-4xl">Departments &amp; Clinics</h1>
         <p className="mt-2 max-w-2xl text-[13px] leading-6 text-slate-500 sm:text-sm sm:leading-7">
@@ -66,19 +64,16 @@ export default async function DepartmentsPage() {
           contact and will refer you to the right specialist.
         </p>
 
-        {CATEGORY_ORDER.map((category) => {
-          const group = departments.filter((department) => department.category === category);
-          if (group.length === 0) return null;
-
-          return (
+        {departmentGroups.map(({ category, group }, sectionIndex) => (
             <section key={category} className="mt-10">
+              {sectionIndex > 0 ? <hr aria-hidden="true" className="mb-8 w-full border-slate-300" /> : null}
               <h2 className="font-display text-2xl text-[#0a2a6b]">{CATEGORY_LABEL[category]}</h2>
               <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {group.map((department) => (
                   <li key={department.slug}>
                     <Link
                       href={`/departments/${department.slug}`}
-                      className={`group flex h-full flex-col rounded-[20px] border border-white/80 ${CARD_GRADIENTS[departments.indexOf(department) % CARD_GRADIENTS.length]} p-5 shadow-[0_10px_30px_rgba(19,27,34,0.05)] transition hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(19,27,34,0.09)]`}
+                      className="group flex h-full flex-col rounded-lg p-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#0a2a6b]"
                     >
                       <span className="font-display text-xl text-slate-800">{department.name}</span>
                       <span className="mt-1.5 flex-1 text-[13px] leading-6 text-slate-500">{department.summary}</span>
@@ -99,13 +94,13 @@ export default async function DepartmentsPage() {
                       <span className="mt-3 inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#0a2a6b]">
                         View department <ArrowRight size={14} className="transition group-hover:translate-x-0.5" />
                       </span>
+                      <span aria-hidden="true" className="mt-4 h-px w-1/2 bg-gradient-to-r from-[#0a2a6b]/35 to-transparent" />
                     </Link>
                   </li>
                 ))}
               </ul>
             </section>
-          );
-        })}
+        ))}
         </div>
       </main>
 
