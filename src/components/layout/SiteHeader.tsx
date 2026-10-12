@@ -3,10 +3,18 @@ import Link from "next/link";
 
 import { BookingButton } from "@/components/booking/BookingButton";
 import { LoginMenu } from "@/components/layout/LoginMenu";
+import { SiteMenuButton } from "@/components/layout/SiteMenuButton";
 import { ShuttleMarquee } from "@/components/layout/ShuttleMarquee";
 import { SHOW_LOGIN } from "@/lib/features";
 
 import brandLogo from "../../../assets/brand_logo.png";
+
+const navLinks = [
+  { label: "Facilities", href: "/#facilities" },
+  { label: "Services", href: "/#services" },
+  { label: "FAQ", href: "/#faq" },
+  { label: "Contact", href: "/#consult" },
+];
 
 /**
  * Solid header for interior public pages (search, departments).
@@ -15,7 +23,18 @@ import brandLogo from "../../../assets/brand_logo.png";
  * so the two are intentionally separate components rather than one component
  * with a `variant` prop.
  */
-export function SiteHeader() {
+export function SiteHeader({
+  action = "book",
+  navFirstLink = "departments",
+}: {
+  action?: "book" | "menu";
+  navFirstLink?: "departments" | "blogs";
+}) {
+  const firstLink = navFirstLink === "blogs"
+    ? { label: "Blogs", href: "/#blog" }
+    : { label: "Departments", href: "/departments" };
+  const pageNavLinks = [firstLink, ...navLinks];
+
   return (
     <header className="sticky top-0 z-40 bg-[#071a45]/95 text-white backdrop-blur">
       <div className="section-shell flex items-center justify-between py-3.5">
@@ -27,13 +46,33 @@ export function SiteHeader() {
           </div>
         </Link>
 
-        <div className="flex items-center gap-3 sm:gap-4">
-          {/* Shown at every width when enabled — the login route must never be phone-only-unreachable. */}
-          {SHOW_LOGIN ? <LoginMenu /> : null}
-          <BookingButton className="rounded-full bg-[#f5b301] px-4 py-2.5 text-sm font-semibold text-[#071a45] transition hover:bg-[#ffc21f] sm:px-5">
-            Book Now
-          </BookingButton>
-        </div>
+        {action === "menu" ? (
+          <div className="flex items-center gap-5">
+            <nav aria-label="Main navigation" className="hidden items-center gap-6 lg:flex">
+              {pageNavLinks.map((link) => (
+                <Link key={link.label} href={link.href} className="text-sm font-medium text-white/80 transition hover:text-white">
+                  {link.label}
+                </Link>
+              ))}
+              {SHOW_LOGIN ? <LoginMenu /> : null}
+            </nav>
+            <div className="hidden lg:block">
+              <BookingButton className="rounded-full bg-[#f5b301] px-5 py-2.5 text-sm font-semibold text-[#071a45] transition hover:bg-[#ffc21f]">
+                Book Now
+              </BookingButton>
+            </div>
+            <div className="lg:hidden">
+              <SiteMenuButton showLogin={SHOW_LOGIN} firstLink={firstLink} />
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center gap-3 sm:gap-4">
+            {SHOW_LOGIN ? <LoginMenu /> : null}
+            <BookingButton className="rounded-full bg-[#f5b301] px-4 py-2.5 text-sm font-semibold text-[#071a45] transition hover:bg-[#ffc21f] sm:px-5">
+              Book Now
+            </BookingButton>
+          </div>
+        )}
       </div>
       <ShuttleMarquee />
     </header>

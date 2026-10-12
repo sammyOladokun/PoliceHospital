@@ -31,6 +31,7 @@ interface AnchorRect {
   left: number;
   width: number;
   maxHeight: number;
+  above: boolean;
 }
 
 export function HeroSearch() {
@@ -43,6 +44,8 @@ export function HeroSearch() {
   const [loading, setLoading] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [searched, setSearched] = useState(false);
+  const [searchError, setSearchError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
   const [anchor, setAnchor] = useState<AnchorRect | null>(null);
 
   const formRef = useRef<HTMLFormElement | null>(null);
@@ -73,13 +76,18 @@ export function HeroSearch() {
     if (!form) return;
 
     const rect = form.getBoundingClientRect();
-    const spaceBelow = window.innerHeight - rect.bottom - PANEL_GAP * 2;
+    const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+    const spaceBelow = Math.max(0, viewportHeight - rect.bottom - PANEL_GAP * 2);
+    const spaceAbove = Math.max(0, rect.top - PANEL_GAP * 2);
+    const above = spaceBelow < MIN_PANEL_HEIGHT && spaceAbove > spaceBelow;
+    const availableSpace = above ? spaceAbove : spaceBelow;
 
     setAnchor({
-      top: rect.bottom + PANEL_GAP,
+      top: above ? rect.top - PANEL_GAP : rect.bottom + PANEL_GAP,
       left: rect.left,
       width: rect.width,
-      maxHeight: Math.max(MIN_PANEL_HEIGHT, Math.min(420, spaceBelow)),
+      maxHeight: Math.min(420, availableSpace),
+      above,
     });
   }, []);
 
@@ -97,11 +105,15 @@ export function HeroSearch() {
     // `capture: true` so scrolling any ancestor container repositions the panel.
     window.addEventListener("scroll", onViewportChange, { passive: true, capture: true });
     window.addEventListener("resize", onViewportChange, { passive: true });
+    window.visualViewport?.addEventListener("resize", onViewportChange, { passive: true });
+    window.visualViewport?.addEventListener("scroll", onViewportChange, { passive: true });
 
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener("scroll", onViewportChange, { capture: true });
       window.removeEventListener("resize", onViewportChange);
+      window.visualViewport?.removeEventListener("resize", onViewportChange);
+      window.visualViewport?.removeEventListener("scroll", onViewportChange);
     };
   }, [showPanel, measure]);
 
@@ -111,11 +123,16 @@ export function HeroSearch() {
       setResults([]);
       setLoading(false);
       setSearched(false);
+      setSearchError(false);
       return;
     }
 
     const controller = new AbortController();
     setLoading(true);
+    setSearched(false);
+    setSearchError(false);
+    setResults([]);
+    setActiveIndex(-1);
 
     const timer = window.setTimeout(async () => {
       try {
@@ -132,6 +149,7 @@ export function HeroSearch() {
         if ((error as Error)?.name !== "AbortError") {
           setResults([]);
           setSearched(true);
+          setSearchError(true);
         }
       } finally {
         if (!controller.signal.aborted) setLoading(false);
@@ -142,7 +160,7 @@ export function HeroSearch() {
       window.clearTimeout(timer);
       controller.abort();
     };
-  }, [trimmed]);
+  }, [trimmed, retryCount]);
 
   /* ---- close on outside click (the panel now lives outside the form) ---- */
   useEffect(() => {
@@ -212,8 +230,14 @@ export function HeroSearch() {
       ? createPortal(
           <div
             ref={panelRef}
-            className="fixed z-[999] overflow-hidden rounded-[20px] bg-white text-left shadow-[0_24px_70px_rgba(5,18,58,0.28)] ring-1 ring-black/[0.06]"
-            style={{ top: anchor.top, left: anchor.left, width: anchor.width }}
+            className="fixed z-[999] overflow-y-auto overscroll-contain rounded-[20px] bg-white text-left shadow-[0_24px_70px_rgba(5,18,58,0.28)] ring-1 ring-black/[0.06]"
+            style={{
+              top: anchor.top,
+              left: anchor.left,
+              width: anchor.width,
+              maxHeight: anchor.maxHeight,
+              transform: anchor.above ? "translateY(-100%)" : undefined,
+            }}
           >
             {trimmed.length < 2 ? (
               <div className="px-4 py-3.5">
@@ -289,6 +313,20 @@ export function HeroSearch() {
                   <ArrowRight size={15} className="shrink-0" />
                 </button>
               </>
+            ) : searchError && !loading ? (
+              <div className="px-4 py-4">
+                <p className="text-sm font-semibold text-slate-800">Search is temporarily unavailable</p>
+                <p className="mt-1 text-[12px] leading-5 text-slate-500">
+                  Check your connection and try again.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setRetryCount((count) => count + 1)}
+                  className="mt-3 rounded-full bg-[#0a2a6b] px-3.5 py-2 text-[12px] font-semibold text-white transition hover:bg-[#0d2f7a]"
+                >
+                  Try again
+                </button>
+              </div>
             ) : searched && !loading ? (
               <div className="px-4 py-4">
                 <p className="text-sm font-semibold text-slate-800">No match for “{trimmed}”</p>
@@ -332,7 +370,7 @@ export function HeroSearch() {
             }}
             onFocus={() => setOpen(true)}
             onKeyDown={onKeyDown}
-            placeholder="Search disease, department"
+            placeholder="Search symptoms, tests, or departments"
             aria-label="Search departments, services, and conditions"
             role="combobox"
             aria-expanded={showPanel}

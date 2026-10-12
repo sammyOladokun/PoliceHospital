@@ -41,7 +41,6 @@ import xrayImg from "../../assets/lab-subject-2.jpeg";
 import lineArt1 from "../../assets/1.png";
 import lineArt2 from "../../assets/2.png";
 import teamIllustration from "../../assets/3.png";
-import { newsStories } from "./news/news-data";
 
 import {
   ChatCenteredDots,
@@ -541,43 +540,6 @@ function TeleconsultPanel() {
   );
 }
 
-function NewsPanel() {
-  const [featured, ...updates] = newsStories;
-
-  return (
-    <section className="section-shell py-12 sm:py-24">
-      <div className="overflow-hidden rounded-[32px] border border-white/25 bg-[#0a2a6b]/90 shadow-[0_24px_70px_rgba(5,18,58,0.3)] backdrop-blur-2xl">
-        <div className="flex items-center border-b border-white/15 bg-white/[0.06] px-6 py-4 sm:px-8">
-          <div className="flex items-center gap-3"><span className="h-2.5 w-2.5 rounded-full bg-[#f5b301] shadow-[0_0_16px_rgba(245,179,1,0.85)]" /><p className="text-xs font-bold uppercase tracking-[0.18em] text-white">News Update</p></div>
-        </div>
-        <div className="grid lg:grid-cols-[minmax(0,1.35fr)_minmax(320px,0.65fr)]">
-          <article className="group border-b border-white/15 p-6 sm:p-8 lg:border-b-0 lg:border-r">
-            <div className="relative h-64 overflow-hidden sm:h-80">
-              <Image src={featured.image} alt={featured.title} fill sizes="(max-width: 1024px) 100vw, 65vw" className="object-cover transition duration-500 group-hover:scale-105" />
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#05123a]/70 to-transparent px-5 py-4"><span className="text-xs font-bold uppercase tracking-[0.14em] text-[#f8ca45]">Featured story</span></div>
-            </div>
-            <p className="mt-6 text-xs font-bold uppercase tracking-[0.14em] text-[#9de0b3]">{featured.date} · Patient education</p>
-            <h2 className="font-display mt-3 max-w-2xl text-3xl leading-tight text-white sm:text-5xl">{featured.title}</h2>
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-white/70">{featured.summary}</p>
-            <Link href={`/news/${featured.slug}`} className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-[#f8ca45]">Read featured story <ArrowRight size={16} /></Link>
-          </article>
-          <div className="divide-y divide-white/15">
-            {updates.map((post, index) => (
-              <article key={post.title} className="p-6 sm:p-8">
-                <div className="flex items-center justify-between gap-4"><span className="text-xs font-bold uppercase tracking-[0.14em] text-[#9de0b3]">{post.date}</span><span className="text-xs font-semibold text-white/40">0{index + 2}</span></div>
-                <h3 className="font-display mt-3 text-3xl leading-tight text-white">{post.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-white/70">{post.summary}</p>
-                <Link href={`/news/${post.slug}`} className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#f8ca45]">Read update <ArrowRight size={15} /></Link>
-              </article>
-            ))}
-            <div className="bg-white/[0.07] p-6 sm:p-8"><Link href="/news" className="inline-flex items-center gap-2 text-sm font-bold text-white">Explore all health insights <ArrowRight size={16} /></Link></div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function FaqItem({ question, answer }: { question: string; answer: string }) {
   return (
     <details className="reveal group rounded-[24px] border border-slate-100 bg-white p-5 shadow-[0_18px_50px_rgba(19,27,34,0.06)]">
@@ -635,7 +597,7 @@ function ServiceTile({
   active: boolean;
   onClick: () => void;
   onPointerEnter: (event: ReactPointerEvent<HTMLButtonElement>) => void;
-  onPointerLeave: () => void;
+  onPointerLeave: (event: ReactPointerEvent<HTMLButtonElement>) => void;
   buttonRef: (element: HTMLButtonElement | null) => void;
 }) {
   const iconByTitle: Record<string, ComponentType<{ size?: number; className?: string }>> = {
@@ -877,7 +839,10 @@ export default function HomePage() {
                       : "translate(-50%, -100%)"
             }}
             onPointerEnter={clearCloseTimer}
-            onPointerLeave={closePopover}
+            onPointerLeave={(event: ReactPointerEvent<HTMLDivElement>) => {
+              if (event.pointerType === "touch") return;
+              closePopover();
+            }}
           >
             <p className="font-display text-xl">{popover.service.title}</p>
             <p className="mt-2 text-sm leading-6 text-white/75">{popover.service.summary}</p>
@@ -1039,8 +1004,8 @@ export default function HomePage() {
         <div className="section-shell">
           <div className="grid items-center gap-10 pb-16 pt-8 lg:grid-cols-[1.05fr_0.95fr] lg:pb-24 lg:pt-12">
             <div className="max-w-2xl">
-              <p className="hero-fade inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/80 backdrop-blur-sm">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#f5b301]" />
+              <p className="hero-fade text-[9px] font-semibold uppercase tracking-[0.18em] text-white/80 sm:text-[11px] sm:tracking-[0.22em]">
+                <span className="mr-2 text-[#f5b301]" aria-hidden="true">|</span>
                 Trusted Partner in Specialist Healthcare
               </p>
               <h1 className="hero-fade font-display mt-4 text-3xl leading-[1.1] sm:mt-5 sm:text-5xl sm:leading-[1.05] lg:text-6xl">
@@ -1156,8 +1121,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ================= HOSPITAL JOURNAL ================= */}
-      <NewsPanel />
       <section className="hidden">
         <div className="relative overflow-hidden rounded-[36px] bg-gradient-to-br from-[#0a2a6b] via-[#071a45] to-[#05123a] text-white shadow-[0_30px_80px_rgba(5,18,58,0.35)]">
           {/* gold accent strip + line-art watermark */}
@@ -1291,7 +1254,8 @@ export default function HomePage() {
                 if (!element) return;
                 openPopover(service, element);
               }}
-              onPointerLeave={() => {
+              onPointerLeave={(event) => {
+                if (event.pointerType === "touch") return;
                 clearCloseTimer();
                 closeTimer.current = window.setTimeout(() => {
                   setPopover((current) => (current && current.service.title === service.title ? null : current));

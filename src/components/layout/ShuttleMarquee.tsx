@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
 import { gsap } from "gsap";
 import { Bus, Pause, Phone, Play } from "@phosphor-icons/react/dist/ssr";
 
@@ -27,7 +27,9 @@ function MarqueeItems() {
         </a>
       ))}
       <span className="marquee-dot" />
-      <span className="marquee-item">Call to ask about pickup times</span>
+      <button type="button" className="marquee-item marquee-link">
+        <Phone size={13} weight="fill" className="text-[#f5b301]" /> Tap to call about pickup times
+      </button>
       <span className="marquee-dot" />
     </>
   );
@@ -44,6 +46,7 @@ function MarqueeItems() {
 export function ShuttleMarquee() {
   const trackRef = useRef<HTMLDivElement | null>(null);
   const tweenRef = useRef<gsap.core.Tween | null>(null);
+  const pickupCallCountRef = useRef(0);
   const [paused, setPaused] = useState(false);
   // Read by the hover handlers so leaving the strip doesn't undo a manual pause.
   const pausedRef = useRef(false);
@@ -84,8 +87,36 @@ export function ShuttleMarquee() {
     if (!pausedRef.current) easeTo(1);
   };
 
+  const callForPickupTimes = () => {
+    let callCount = pickupCallCountRef.current;
+    try {
+      const storedCount = Number(window.sessionStorage.getItem("shuttle-pickup-call-count") ?? "0");
+      if (Number.isFinite(storedCount)) callCount = storedCount;
+    } catch {
+      // Fall back to this component instance if session storage is unavailable.
+    }
+    const line = phoneLines[callCount % phoneLines.length];
+    const nextCount = callCount + 1;
+    pickupCallCountRef.current = nextCount;
+    try {
+      window.sessionStorage.setItem("shuttle-pickup-call-count", String(nextCount));
+    } catch {
+      // The alternating sequence still works for this component instance.
+    }
+    window.location.href = `tel:${line.tel}`;
+  };
+
+  const handleMarqueeClick = (event: ReactMouseEvent<HTMLDivElement>) => {
+    const target = event.target;
+    if (target instanceof Element && target.closest('a[href^="tel:"], [data-marquee-control]')) return;
+    callForPickupTimes();
+  };
+
   return (
-    <div className="shuttle-marquee relative border-y border-[#f5b301]/25 bg-[#05123a]/80 text-white backdrop-blur-sm">
+    <div
+      className="shuttle-marquee relative cursor-pointer border-y border-[#f5b301]/25 bg-[#05123a]/80 text-white backdrop-blur-sm"
+      onClick={handleMarqueeClick}
+    >
       <div className="flex items-stretch">
         <span className="relative z-10 flex shrink-0 items-center gap-2 bg-[#f5b301] px-3 text-[10px] font-bold uppercase tracking-[0.18em] text-[#071a45] sm:px-4 sm:text-[11px]">
           <span className="relative flex h-2 w-2">
@@ -114,6 +145,7 @@ export function ShuttleMarquee() {
 
         <button
           type="button"
+          data-marquee-control
           onClick={() => {
             const next = !paused;
             setPausedBoth(next);

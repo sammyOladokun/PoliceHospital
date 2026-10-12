@@ -41,7 +41,7 @@ function RefineForm({ defaultValue }: { defaultValue: string }) {
           type="search"
           name="q"
           defaultValue={defaultValue}
-          placeholder="Search disease, department"
+          placeholder="Search symptoms, tests, or departments"
           aria-label="Search departments, services, and conditions"
           className="w-full min-w-0 bg-transparent text-sm outline-none placeholder:text-slate-400"
         />

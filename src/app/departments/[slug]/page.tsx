@@ -59,28 +59,16 @@ export default async function DepartmentPage({ params }: { params: Promise<{ slu
 
   return (
     <div className="flex min-h-screen flex-col bg-[#f3f5fb]">
-      <SiteHeader />
+      <SiteHeader action="menu" />
 
       <main className="w-full flex-1">
         {/* --- Department hero --- */}
         <section className="bg-gradient-to-br from-[#0d2f7a] via-[#0a2a6b] to-[#05123a] text-white">
           <div className="section-shell py-10 sm:py-14">
-            <nav aria-label="Breadcrumb" className="text-[13px] text-white/50">
-              <Link href="/" className="transition hover:text-white">
-                Home
-              </Link>
-              <span className="mx-2">/</span>
-              <Link href="/departments" className="transition hover:text-white">
-                Departments
-              </Link>
-              <span className="mx-2">/</span>
-              <span className="text-white/80">{department.name}</span>
-            </nav>
-
-            <span className="mt-4 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/80">
-              <span className={`h-1.5 w-1.5 rounded-full ${isEmergency ? "bg-[#ff6b6b]" : "bg-[#f5b301]"}`} />
+            <p className="inline-flex items-center text-[10px] font-semibold uppercase tracking-[0.2em] text-white/80">
+              <span className={`mr-2 ${isEmergency ? "text-[#ff6b6b]" : "text-[#f5b301]"}`} aria-hidden="true">|</span>
               {isEmergency ? "Open 24/7" : `${department.category} department`}
-            </span>
+            </p>
 
             <h1 className="font-display mt-3 max-w-3xl text-3xl leading-tight sm:text-5xl">{department.name}</h1>
             <p className="mt-4 max-w-2xl text-[13px] leading-6 text-white/75 sm:text-base sm:leading-7">
@@ -116,7 +104,7 @@ export default async function DepartmentPage({ params }: { params: Promise<{ slu
 
         <div className="section-shell grid gap-6 py-10 lg:grid-cols-[1.4fr_1fr] sm:py-14">
           {/* --- Services offered --- */}
-          <section className="rounded-[24px] border border-slate-100 bg-white p-6 shadow-[0_10px_30px_rgba(19,27,34,0.05)] sm:p-8">
+          <section>
             <h2 className="font-display text-2xl text-[#0a2a6b]">What this department offers</h2>
             {department.services.length > 0 ? (
               <ul className="mt-5 grid gap-3 sm:grid-cols-2">
@@ -189,7 +177,7 @@ export default async function DepartmentPage({ params }: { params: Promise<{ slu
               </Link>
             </div>
 
-            <div className="rounded-[24px] border border-slate-100 bg-white p-6 shadow-[0_10px_30px_rgba(19,27,34,0.05)]">
+            <div>
               <h2 className="font-display text-xl text-[#0a2a6b]">Other departments</h2>
               <ul className="mt-3 divide-y divide-slate-100">
                 {seedDepartments
