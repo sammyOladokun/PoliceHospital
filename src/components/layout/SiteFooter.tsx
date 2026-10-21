@@ -67,7 +67,7 @@ export function SiteFooter() {
                   </li>
                 ))}
                 <li className="flex items-start gap-2.5">
-                  <ChatCenteredDots size={16} className="mt-0.5 shrink-0 text-[#f5b301]" /> help@policehospital.ng
+                  <ChatCenteredDots size={16} className="mt-0.5 shrink-0 text-[#f5b301]" /> pciclinic@yahoo.com
                 </li>
               </ul>
             </div>
