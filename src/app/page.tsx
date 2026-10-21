@@ -1404,7 +1404,10 @@ export default function HomePage() {
                     </li>
                   ))}
                   <li className="flex items-start gap-2.5">
-                    <ChatCenteredDots size={16} className="mt-0.5 shrink-0 text-[#f5b301]" /> pciclinic@yahoo.com
+                    <ChatCenteredDots size={16} className="mt-0.5 shrink-0 text-[#f5b301]" />
+                    <a href="mailto:pciclinic@yahoo.com" className="transition hover:text-white">
+                      pciclinic@yahoo.com
+                    </a>
                   </li>
                 </ul>
               </div>
